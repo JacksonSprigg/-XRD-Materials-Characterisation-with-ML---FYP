@@ -26,8 +26,9 @@ wandb.init(
     "batch_size": 32,
     "num_workers": 4,       # Set to the amount of CPU cores as a practice?
     "learning_rate": 0.001,
-    "num_epochs": 5,        # Reduced number of epochs for the test run
-})
+    "num_epochs": 10,        # Reduced number of epochs for the test run
+    }
+)
 
 # Access hyperparameters from wandb config
 config = wandb.config
@@ -52,11 +53,11 @@ model = model.to(device)
 wandb.watch(model)
 
 # Train the model
-trained_model, final_loss = train(model, train_loader, val_loader, criterion, optimizer, device, config.num_epochs)
+trained_model, final_loss, accuracy = train(model, train_loader, val_loader, criterion, optimizer, device, config.num_epochs)
 
 # Create a unique model name including the model type and loss
 current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-model_name = f"{model_type}_loss{final_loss:.4f}_{current_time}.pth"
+model_name = f"{model_type}_loss{final_loss:.4f}_accuracy{accuracy:.4f}_{current_time}.pth"
 
 # Save the trained model
 torch.save(trained_model.state_dict(), f'/monfs01/projects/ys68/XRD_ML/trained_models/{model_name}')
