@@ -1,0 +1,2 @@
+The partial data can be found here:
+https://huggingface.co/datasets/caobin/SimXRDreview/tree/main
