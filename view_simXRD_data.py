@@ -97,7 +97,7 @@ def looking_at_data(databs, max_iterations, plot=False):
 
     return 
 
-
+# hi
 # Generates plots
 limit = 3       # The amount of XRD rows you want to go through
 plot  = True   # This will save the matplots to scratch folder
