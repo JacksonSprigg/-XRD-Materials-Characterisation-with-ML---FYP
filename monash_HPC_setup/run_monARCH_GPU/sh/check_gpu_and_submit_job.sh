@@ -12,4 +12,8 @@
 # Load necessary modules
 module load cuda
 
+nvidia-smi
+deviceQuery
+
 srun python /monfs01/projects/ys68/XRD_ML/scripts/check_GPUs.py
+srun python /monfs01/projects/ys68/XRD_ML/scripts/main.py

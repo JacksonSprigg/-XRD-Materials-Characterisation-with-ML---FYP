@@ -3,7 +3,7 @@ import sys
 
 # Checks if you have access to any GPUs
 def check_gpus():
-    print("Python version:", sys.version)
+    print("\n\nPython version:", sys.version)
     print("PyTorch version:", torch.__version__)
 
     if torch.cuda.is_available():
@@ -23,9 +23,9 @@ def check_gpus():
     print("\nCUDA Device:")
     if torch.cuda.is_available():
         print(f"  Current Device: {torch.cuda.current_device()}")
-        print(f"  Device Name: {torch.cuda.get_device_name(0)}")
+        print(f"  Device Name: {torch.cuda.get_device_name(0)}\n\n")
     else:
-        print("  No CUDA device available")
+        print("  No CUDA device available\n\n")
 
 if __name__ == "__main__":
     check_gpus()

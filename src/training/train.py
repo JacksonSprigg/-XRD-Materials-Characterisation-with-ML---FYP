@@ -2,16 +2,18 @@ import torch
 import wandb
 from tqdm import tqdm
 
-def train(model, train_loader, val_loader, criterion, optimizer, num_epochs, max_batches=None, val_subset=None):
+def train(model, train_loader, val_loader, criterion, optimizer, device, num_epochs):
     for epoch in range(num_epochs):
         model.train()
         train_loss = 0.0
         for batch_idx, (data, target) in enumerate(tqdm(train_loader, desc=f"Epoch {epoch+1} Training")):
-            if max_batches and batch_idx >= max_batches:
-                break
-            
+
             # Reshape data: [batch_size, 3501] -> [batch_size, 1, 3501]
             data = data.unsqueeze(1)
+
+            # Move data and target to the appropriate device
+            data = data.to(device)
+            target = target.to(device)
             
             optimizer.zero_grad()
             output = model(data)
@@ -20,7 +22,7 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs, max
             optimizer.step()
             train_loss += loss.item()
         
-        train_loss /= min(len(train_loader), max_batches) if max_batches else len(train_loader)
+        train_loss /= len(train_loader)
         
         # Validation
         model.eval()
@@ -29,11 +31,13 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs, max
         total = 0
         with torch.no_grad():
             for batch_idx, (data, target) in enumerate(tqdm(val_loader, desc=f"Epoch {epoch+1} Validation")):
-                if val_subset and total >= val_subset:
-                    break
                 
                 # Reshape data: [batch_size, 3501] -> [batch_size, 1, 3501]
                 data = data.unsqueeze(1)
+
+                # Move data and target to the appropriate device
+                data = data.to(device)
+                target = target.to(device)
                 
                 output = model(data)
                 val_loss += criterion(output, target).item()
@@ -53,5 +57,5 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs, max
         })
         
         print(f'Epoch {epoch+1}: Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}, Accuracy: {accuracy:.2f}%')
-        
+
     return model, val_loss

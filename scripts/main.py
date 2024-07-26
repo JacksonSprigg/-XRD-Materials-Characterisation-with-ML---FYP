@@ -20,20 +20,20 @@ model_type = "CNNten"
 wandb.init(
     project="test-run", 
 
+    dir="/monfs01/projects/ys68/XRD_ML",
+
     config={
     "batch_size": 32,
-    "num_workers": 3,
+    "num_workers": 4,       # Set to the amount of CPU cores as a practice?
     "learning_rate": 0.001,
-    "num_epochs": 2,        # Reduced number of epochs for the test run
-    "max_batches": 10,      # Limit the number of batches per epoch
-    "val_subset": 100       # Number of samples to use for validation
+    "num_epochs": 5,        # Reduced number of epochs for the test run
 })
 
 # Access hyperparameters from wandb config
 config = wandb.config
 
 # Create data loaders
-train_loader, val_loader, test_loader = create_data_loaders('simXRD_partial_data/train.db', 'simXRD_partial_data/val.db', 'simXRD_partial_data/test.db', config.batch_size, config.num_workers)
+train_loader, val_loader, test_loader = create_data_loaders('/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/train.db', '/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/val.db', '/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/test.db', config.batch_size, config.num_workers)
 
 # Initialize model, loss, and optimizer
 model = CNNten()
@@ -52,15 +52,15 @@ model = model.to(device)
 wandb.watch(model)
 
 # Train the model
-trained_model, final_loss = train(model, train_loader, val_loader, criterion, optimizer, config.num_epochs)
+trained_model, final_loss = train(model, train_loader, val_loader, criterion, optimizer, device, config.num_epochs)
 
 # Create a unique model name including the model type and loss
 current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 model_name = f"{model_type}_loss{final_loss:.4f}_{current_time}.pth"
 
 # Save the trained model
-torch.save(trained_model.state_dict(), f'trained_models/{model_name}')
-wandb.save(f'trained_models/{model_name}')
+torch.save(trained_model.state_dict(), f'/monfs01/projects/ys68/XRD_ML/trained_models/{model_name}')
+wandb.save(f'/monfs01/projects/ys68/XRD_ML/trained_models/{model_name}')
 
 print(f"Training completed. Model saved as '{model_name}'.")
 wandb.finish()
