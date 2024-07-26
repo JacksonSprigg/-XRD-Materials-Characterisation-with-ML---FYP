@@ -35,12 +35,11 @@ from ase.db import connect
 ## Note that you may need to change this path depending on permissions ##
 train_data_path = "/home/jsprigg/ys68/XRD_ML/simXRD_partial_data/train.db"  # Train size = 5000
 test_data_path = "/home/jsprigg/ys68/XRD_ML/simXRD_partial_data/test.db"    # Test size  = 2000
-val_data_path = "/home/jsprigg/ys68/XRD_ML/simXRD_partial_data/data/val.db" # Val size   = 1000
+val_data_path = "/home/jsprigg/ys68/XRD_ML/simXRD_partial_data/val.db"      # Val size   = 1000
 databs = connect(val_data_path)
 
-# Createing an XRD plot and saving it to the below path
-image_save_path = "scratch/"
-# image_save_path = "ys68/cloned_repos/XRDBench_clone/JacksonCode/xrd_plots/" # For plots we want to keep
+# Creating an XRD plot and saving it to the below path
+image_save_path = "/home/jsprigg/scratch/"
 def plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, bravislatt_type, image_save_path):
 
     # Plot the X-ray diffraction data
@@ -101,5 +100,5 @@ def looking_at_data(databs, max_iterations, plot=False):
 
 # Generates plots
 limit = 3       # The amount of XRD rows you want to go through
-plot  = False   # This will save the matplots to scratch folder
+plot  = True   # This will save the matplots to scratch folder
 looking_at_data = looking_at_data(databs, limit, plot=plot)

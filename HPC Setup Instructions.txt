@@ -7,4 +7,4 @@
 
 3. set your code interpreter to use this venv at location (This is not a terminal command): 
     /monfs01/projects/ys68/v_envs/simxrd_env/bin/python
-    (I had a bit of trouble here, you may need to update your extensions)
+    (I had a bit of trouble here, you may need to update your python extensions)
