@@ -14,7 +14,8 @@ class simXRDDataset(Dataset):
     def __getitem__(self, idx):
         row = self.db.get(idx + 1)  # ASE db indexing starts at 1
         
-        # Extract features (Note that it is normalised to 100)
+        # Extract features 
+        # IMPORTANT - Note that it is normalised to 100
         intensity = np.array(eval(row.intensity), dtype=np.float32)
         
         # Extract labels

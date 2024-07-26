@@ -42,9 +42,9 @@ from ase.db import connect
 #####################################################################################
 
 ## Note that you may need to change this path depending on permissions ##
-train_data_path = "/home/jsprigg/ys68/XRD_ML/simXRD_partial_data/train.db"  # Train size = 5000
-test_data_path = "/home/jsprigg/ys68/XRD_ML/simXRD_partial_data/test.db"    # Test size  = 2000
-val_data_path = "/home/jsprigg/ys68/XRD_ML/simXRD_partial_data/val.db"      # Val size   = 1000
+train_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/train.db"  # Train size = 5000
+test_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/test.db"    # Test size  = 2000
+val_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/val.db"      # Val size   = 1000
 databs = connect(val_data_path)
 
 # Creating an XRD plot and saving it to the below path

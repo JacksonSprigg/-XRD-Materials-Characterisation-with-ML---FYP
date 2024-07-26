@@ -25,8 +25,8 @@ wandb.init(
     "num_workers": 3,
     "learning_rate": 0.001,
     "num_epochs": 2,        # Reduced number of epochs for the test run
-    "max_batches": 10,  # Limit the number of batches per epoch
-    "val_subset": 100  # Number of samples to use for validation
+    "max_batches": 10,      # Limit the number of batches per epoch
+    "val_subset": 100       # Number of samples to use for validation
 })
 
 # Access hyperparameters from wandb config
@@ -39,6 +39,14 @@ train_loader, val_loader, test_loader = create_data_loaders('simXRD_partial_data
 model = CNNten()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
+
+# Check for GPUs, if more than one, use them all
+if torch.cuda.device_count() > 1:
+    print(f"Using {torch.cuda.device_count()} GPUs!")
+    model = nn.DataParallel(model)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = model.to(device)
 
 # Log the model architecture
 wandb.watch(model)
