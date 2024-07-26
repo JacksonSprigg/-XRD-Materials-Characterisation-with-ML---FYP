@@ -1,3 +1,9 @@
+########## Comment this out if you are having path errors #########################
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+##################################################################################
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -6,17 +12,16 @@ from src.data_handling.simXRD_data_loader import create_data_loaders
 from src.training.train import train
 from src.models.CNNten import CNNten
 
+
 # Initialize wandb
 wandb.init(
-    project="xrd-classification", 
+    project="test-run", 
 
     config={
     "batch_size": 32,
     "num_workers": 3,
     "learning_rate": 0.001,
     "num_epochs": 2,        # Reduced number of epochs for the test run
-    "input_size": 3501,
-    "num_classes": 230,
     "max_batches": 10,  # Limit the number of batches per epoch
     "val_subset": 100  # Number of samples to use for validation
 })
@@ -25,11 +30,10 @@ wandb.init(
 config = wandb.config
 
 # Create data loaders
-# create_data_loaders(train_path, val_path, test_path, batch_size=32, num_workers=3)
-train_loader, val_loader, test_loader = create_data_loaders('data/train.db', 'data/val.db', 'data/test.db', config.batch_size, config.num_workers)
+train_loader, val_loader, test_loader = create_data_loaders('simXRD_partial_data/train.db', 'simXRD_partial_data/val.db', 'simXRD_partial_data/test.db', config.batch_size, config.num_workers)
 
 # Initialize model, loss, and optimizer
-model = CNNten(input_size=config.input_size, num_classes=config.num_classes)
+model = CNNten()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
 

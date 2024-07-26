@@ -10,6 +10,9 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs, max
             if max_batches and batch_idx >= max_batches:
                 break
             
+            # Reshape data: [batch_size, 3501] -> [batch_size, 1, 3501]
+            data = data.unsqueeze(1)
+            
             optimizer.zero_grad()
             output = model(data)
             loss = criterion(output, target)
@@ -28,6 +31,9 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs, max
             for batch_idx, (data, target) in enumerate(tqdm(val_loader, desc=f"Epoch {epoch+1} Validation")):
                 if val_subset and total >= val_subset:
                     break
+                
+                # Reshape data: [batch_size, 3501] -> [batch_size, 1, 3501]
+                data = data.unsqueeze(1)
                 
                 output = model(data)
                 val_loss += criterion(output, target).item()

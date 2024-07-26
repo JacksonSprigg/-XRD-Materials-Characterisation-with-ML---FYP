@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class CNNten(nn.Module):
-    def __init__(self,args):
+    def __init__(self):
         super(CNNten, self).__init__()
 
         self.conv1 = nn.Conv1d(1, 24, kernel_size=12, stride=1)
