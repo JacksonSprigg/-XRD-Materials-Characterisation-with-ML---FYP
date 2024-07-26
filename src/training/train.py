@@ -53,5 +53,5 @@ def train(model, train_loader, val_loader, criterion, optimizer, num_epochs, max
         })
         
         print(f'Epoch {epoch+1}: Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}, Accuracy: {accuracy:.2f}%')
-    
-    return model
+        
+    return model, val_loss

@@ -3,3 +3,6 @@
 
 #Ignore wandb
 wandb/
+
+#Ignore trained models
+trained_models/

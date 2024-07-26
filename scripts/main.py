@@ -8,10 +8,13 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import wandb
+import datetime
 from src.data_handling.simXRD_data_loader import create_data_loaders
 from src.training.train import train
 from src.models.CNNten import CNNten
 
+# Name the model:
+model_type = "CNNten"
 
 # Initialize wandb
 wandb.init(
@@ -41,11 +44,15 @@ optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
 wandb.watch(model)
 
 # Train the model
-trained_model = train(model, train_loader, val_loader, criterion, optimizer, config.num_epochs)
+trained_model, final_loss = train(model, train_loader, val_loader, criterion, optimizer, config.num_epochs)
+
+# Create a unique model name including the model type and loss
+current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+model_name = f"{model_type}_loss{final_loss:.4f}_{current_time}.pth"
 
 # Save the trained model
-torch.save(trained_model.state_dict(), 'trained_model.pth')
-wandb.save('trained_model.pth')
+torch.save(trained_model.state_dict(), f'trained_models/{model_name}')
+wandb.save(f'trained_models/{model_name}')
 
-print("Training completed. Model saved as 'trained_model.pth'.")
+print(f"Training completed. Model saved as '{model_name}'.")
 wandb.finish()
