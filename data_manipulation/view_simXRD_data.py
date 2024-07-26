@@ -40,6 +40,7 @@ databs = connect(val_data_path)
 
 # Creating an XRD plot and saving it to the below path
 image_save_path = "/home/jsprigg/scratch/"
+#image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
 def plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, bravislatt_type, image_save_path):
 
     # Plot the X-ray diffraction data
@@ -97,8 +98,7 @@ def looking_at_data(databs, max_iterations, plot=False):
 
     return 
 
-# hi
 # Generates plots
-limit = 3       # The amount of XRD rows you want to go through
+limit = 5       # The amount of XRD rows you want to go through
 plot  = True   # This will save the matplots to scratch folder
 looking_at_data = looking_at_data(databs, limit, plot=plot)
