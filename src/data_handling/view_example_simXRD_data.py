@@ -47,9 +47,7 @@ test_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/test.db"    
 val_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/val.db"      # Val size   = 1000
 databs = connect(val_data_path)
 
-# Creating an XRD plot and saving it to the below path
-image_save_path = "/home/jsprigg/scratch/"
-#image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
+# Creating an XRD plot
 def plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, bravislatt_type, image_save_path):
 
     # Plot the X-ray diffraction data
@@ -118,7 +116,11 @@ def looking_at_data(databs, max_iterations, plot=False):
 
     return 
 
-# Generates plots
-limit = 5       # The amount of XRD rows you want to go through
-plot  = True   # This will save the matplots to scratch folder
-looking_at_data = looking_at_data(databs, limit, plot=plot)
+if __name__ == "__main__":
+    image_save_path = "/home/jsprigg/scratch/"
+    #image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
+
+    # Generates plots
+    limit = 5       # The amount of XRD rows you want to go through
+    plot  = True    # This will save the matplots to scratch folder
+    looking_at_data(databs, limit, plot=plot)

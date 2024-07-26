@@ -17,6 +17,7 @@ from src.models.CNNten import CNNten
 model_type = "CNNten"
 
 # Initialize wandb
+wandb.require("core") # This line fixes a retry upload bug I was having. See: https://github.com/wandb/wandb/issues/4929
 wandb.init(
     project="test-run", 
 
@@ -24,9 +25,9 @@ wandb.init(
 
     config={
     "batch_size": 32,
-    "num_workers": 4,       # Set to the amount of CPU cores as a practice?
+    "num_workers": 8,       # Set to the amount of CPU cores as a practice?
     "learning_rate": 0.001,
-    "num_epochs": 10,        # Reduced number of epochs for the test run
+    "num_epochs": 15,        # Reduced number of epochs for the test run
     }
 )
 
@@ -45,7 +46,6 @@ optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
 if torch.cuda.device_count() > 1:
     print(f"Using {torch.cuda.device_count()} GPUs!")
     model = nn.DataParallel(model)
-
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 
