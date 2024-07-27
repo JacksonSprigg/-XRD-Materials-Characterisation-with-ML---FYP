@@ -11,6 +11,7 @@ import torch.nn as nn
 import torch.optim as optim
 from src.models.CNNten import CNNten
 from src.models.FCNten import FCNten
+from src.models.MLPten import MLPten
 #from src.models.CrystalNet import 
 
 # Paths
@@ -26,7 +27,7 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "FCNten"                # Options: "CNNten", "FCNten"
+MODEL_TYPE = "MLPten"        # Options: "CNNten", "FCNten", "MLPten"
 CRITERION_TYPE = "CrossEntropyLoss"  # Options: "CrossEntropyLoss", "MSELoss"
 OPTIMIZER_TYPE = "Adam"              # Options: "Adam", "SGD"
 
@@ -48,7 +49,8 @@ WANDB_LOG_ARCHITECTURE = False
 ############# DON'T TOUCH - Classes are the options for above) ##################
 MODEL_CLASS = {
     "CNNten": CNNten,
-    "FCNten": FCNten
+    "FCNten": FCNten,
+    "MLPten": MLPten
 }
 CRITERION_CLASS = {
     "CrossEntropyLoss": nn.CrossEntropyLoss,

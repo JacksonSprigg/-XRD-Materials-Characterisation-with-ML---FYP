@@ -36,6 +36,7 @@ def setup_model():
     return model, criterion, optimizer
 
 # THIS NEED TO BE UPDATED, THE METHOD IS NOT STANDARD
+# I AM NOT SURE HOW WELL IT WILL HANDLE MULTIPLE GPUs
 def setup_device(model):
     # Setup GPUs
     if torch.cuda.device_count() > 1:
@@ -45,7 +46,7 @@ def setup_device(model):
     return model.to(device), device
 
 def save_model(model, final_loss, test_accuracy):
-    # Save the model with its important characteristics
+    # Save the model with its important characteristics in the name
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     model_name = f"{config.MODEL_TYPE}_testloss{final_loss:.4f}_testaccuracy_{test_accuracy:.2f}_data_{config.NAME_OF_DATA_USED}_time_{current_time}.pth"
     full_path = f'{config.MODEL_SAVE_DIR}/{model_name}'

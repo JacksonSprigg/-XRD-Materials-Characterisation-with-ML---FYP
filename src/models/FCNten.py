@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-# An alteration of CNNten to be an FCN
+# An FCN comparable to CNNten for comparison purposes
 
 class FCNten(nn.Module):
     def __init__(self, num_classes=230):
