@@ -1,6 +1,8 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
+# Very simple multi-task added in the final layer.
+
 class CNNten_multi_task(nn.Module):
     def __init__(self):
         super(CNNten_multi_task, self).__init__()
@@ -18,9 +20,9 @@ class CNNten_multi_task(nn.Module):
         self.fcl1 = nn.Linear(4992, 2000)
 
         # Task-specific layers
-        self.fcl_spg = nn.Linear(2000, 230)         # Space group classification
-        self.fcl_crysystem = nn.Linear(2000, 7)     # Crystal system classification
-        self.fcl_blt = nn.Linear(2000, 6)           # Bravais lattice type classification
+        self.fcl_spg = nn.Linear(2000, 230)          # Space group classification
+        self.fcl_crysystem = nn.Linear(2000, 7)      # Crystal system classification
+        self.fcl_blt = nn.Linear(2000, 6)            # Bravais lattice type classification
         self.fcl_composition = nn.Linear(2000, 118)  # Composition prediction
 
         self.flatten = nn.Flatten()

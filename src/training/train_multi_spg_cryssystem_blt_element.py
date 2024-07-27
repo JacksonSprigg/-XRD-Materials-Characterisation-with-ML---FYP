@@ -1,8 +1,14 @@
 import torch
 import wandb
 from tqdm import tqdm
+from sklearn.metrics import f1_score
 
 def train_multi_spg_cryssystem_blt_element(model, train_loader, val_loader, test_loader, criteria, optimizer, device, num_epochs):
+    
+    # Initialize running averages for loss normalization
+    running_avg_losses = {task: 1.0 for task in criteria.keys()}
+    momentum = 0.9  # Momentum for updating running averages
+    
     for epoch in range(num_epochs):
         model.train()
         train_losses = {task: 0.0 for task in criteria.keys()}
@@ -19,14 +25,18 @@ def train_multi_spg_cryssystem_blt_element(model, train_loader, val_loader, test
             optimizer.zero_grad()
             outputs = model(data)
 
+            # Normalize losses
             losses = {task: criteria[task](outputs[task], targets[task]) for task in criteria.keys()}
-            total_loss = sum(losses.values())
+            normalized_losses = {task: loss / running_avg_losses[task] for task, loss in losses.items()}
+            total_loss = sum(normalized_losses.values())
             
             total_loss.backward()
             optimizer.step()
             
-            for task in losses:
-                train_losses[task] += losses[task].item()
+            # Update running averages
+            for task, loss in losses.items():
+                running_avg_losses[task] = momentum * running_avg_losses[task] + (1 - momentum) * loss.item()
+                train_losses[task] += loss.item()
         
         for task in train_losses:
             train_losses[task] /= len(train_loader)
@@ -60,6 +70,9 @@ def evaluate_multi_task(model, data_loader, criteria, device):
     total_losses = {task: 0.0 for task in criteria.keys()}
     correct = {task: 0 for task in ['spg', 'crysystem', 'blt']}
     total = 0
+
+    all_composition_preds = []
+    all_composition_targets = []
     
     with torch.no_grad():
         for data, spg, crysystem, blt, composition in tqdm(data_loader, desc="Evaluation"):
@@ -81,13 +94,24 @@ def evaluate_multi_task(model, data_loader, criteria, device):
             for task in ['spg', 'crysystem', 'blt']:
                 pred = outputs[task].argmax(dim=1, keepdim=True)
                 correct[task] += pred.eq(targets[task].view_as(pred)).sum().item()
+
+            # Threshold for composition BCE
+            composition_pred = (outputs['composition'] > 0.5).float()
+            all_composition_preds.append(composition_pred.cpu())
+            all_composition_targets.append(targets['composition'].cpu())
             
             total += data.size(0)
     
     avg_losses = {task: total_losses[task] / len(data_loader) for task in total_losses}
     accuracies = {task: 100. * correct[task] / total for task in ['spg', 'crysystem', 'blt']}
+
+    # Calculate F1 score for composition
+    all_composition_preds = torch.cat(all_composition_preds, dim=0).numpy()
+    all_composition_targets = torch.cat(all_composition_targets, dim=0).numpy()
+    composition_f1 = f1_score(all_composition_targets, all_composition_preds, average='samples')
     
     metrics = {f"{task}_loss": loss for task, loss in avg_losses.items()}
     metrics.update({f"{task}_accuracy": acc for task, acc in accuracies.items()})
+    metrics['composition_f1'] = composition_f1 * 100
     
     return metrics

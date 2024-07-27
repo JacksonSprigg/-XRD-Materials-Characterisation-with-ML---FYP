@@ -8,6 +8,23 @@ class simXRDDataset(Dataset):
         self.db = connect(db_path)
         self.length = self.db.count()
 
+        # For converting element list to a composition vector
+        self.element_set = [
+            'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
+            'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca',
+            'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn',
+            'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 'Rb', 'Sr', 'Y', 'Zr',
+            'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn',
+            'Sb', 'Te', 'I', 'Xe', 'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd',
+            'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb',
+            'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg',
+            'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 'Fr', 'Ra', 'Ac', 'Th',
+            'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm',
+            'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds',
+            'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
+        ]
+        self.element_to_index = {elem: i for i, elem in enumerate(self.element_set)}
+
     def __len__(self):
         return self.length
 
@@ -25,33 +42,19 @@ class simXRDDataset(Dataset):
         element = getattr(row, 'symbols')
 
         # This is so that it goes from 0-6 ,instead of 1-7
-        # YOU MAY NEED TO DO THIS FOR CRYSTAL GROUPS AS WELL!
+        ### YOU WILL NEED TO ADD THE ONE BACK IN WHEN USING FOR INFERENCE ####
         crysystem -= 1
+        space_group -= 1
 
         # Convert Bravais lattice type to numerical encoding
         blt_encoding = {"P": 0, "I": 1, "F": 2, "A": 3, "B": 4, "C": 5}
         blt_num = blt_encoding[bravis_latt_type]
 
-        # Convert element list to composition vector
-        element_set = set([
-            'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
-            'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca',
-            'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn',
-            'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 'Rb', 'Sr', 'Y', 'Zr',
-            'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn',
-            'Sb', 'Te', 'I', 'Xe', 'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd',
-            'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb',
-            'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg',
-            'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 'Fr', 'Ra', 'Ac', 'Th',
-            'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm',
-            'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds',
-            'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
-        ])        
-        composition = np.zeros(len(element_set), dtype=np.float32)
+        # Convert element list to composition vector (Elements are currently one hot encoded)   
+        composition = np.zeros(len(self.element_set), dtype=np.float32)
         for elem in element:
-            if elem in element_set:
-                composition[list(element_set).index(elem)] += 1
-        composition /= len(element)  # Normalize to fractions
+            if elem in self.element_set:
+                composition[list(self.element_set).index(elem)] = 1
         
         # Convert to tensors
         intensity_tensor = torch.from_numpy(intensity)

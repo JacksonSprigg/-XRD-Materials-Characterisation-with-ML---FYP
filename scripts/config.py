@@ -28,8 +28,8 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "CNNten"     # Options: "CNNten", "FCNten", "MLPten", "CNNten_multi_task"
-MULTI_TASK = False                    # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
+MODEL_TYPE = "CNNten_multi_task"     # Options: "CNNten", "FCNten", "MLPten", "CNNten_multi_task"
+MULTI_TASK = True                    # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
 CRITERION_TYPE = "CrossEntropyLoss"  # Options: "CrossEntropyLoss", "MSELoss"
 OPTIMIZER_TYPE = "Adam"              # Options: "Adam", "SGD"
 
@@ -38,7 +38,7 @@ MULTI_TASK_CRITERIA = {
     'spg': nn.CrossEntropyLoss(),
     'crysystem': nn.CrossEntropyLoss(),
     'blt': nn.CrossEntropyLoss(),
-    'composition': nn.MSELoss()
+    'composition': nn.BCEWithLogitsLoss()
 }
 
 # Hyper Parasms
@@ -50,7 +50,7 @@ NUM_EPOCHS = 25
 NUM_WORKERS = 8
 
 # WandB configuration (Note that there is already a basic WandB log in train.py)
-WANDB_PROJECT_NAME = "test_2"
+WANDB_PROJECT_NAME = "FirstModelExperiments"
 WANDB_SAVE_DIR = "/monfs01/projects/ys68/XRD_ML"
 SAVE_MODEL_TO_WANDB_SERVERS = False
 WANDB_LOG_ARCHITECTURE = False

@@ -3,6 +3,7 @@ from ase.db import connect
 from collections import Counter
 import torch
 import numpy as np
+from heapq import heappush, heappushpop
 
 ### Let's look at the simXRD data ###
 
@@ -99,6 +100,9 @@ def looking_at_data(db_path, max_iterations, plot=False):
     composition_lengths = []
     element_counts = {}
 
+    # Heap to keep track of the 50 largest compositions
+    largest_compositions = []
+
     element_set = set([
         'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
         'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca',
@@ -130,17 +134,21 @@ def looking_at_data(db_path, max_iterations, plot=False):
         spg_values.append(spg)
         crysystem_values.append(crysystem)
         blt_values.append(bravislatt_type)
-        composition_lengths.append(len(element))
+        composition_length = len(element)
+        composition_lengths.append(composition_length)
 
         # Process composition
-        composition = np.zeros(len(element_set), dtype=np.float32)
-        for elem in element:
-            if elem in element_set:
-                composition[list(element_set).index(elem)] += 1
-                element_counts[elem] = element_counts.get(elem, 0) + 1
-        composition /= len(element)
+        composition = Counter(element)
+        for elem in composition:
+            element_counts[elem] = element_counts.get(elem, 0) + composition[elem]
 
-        # Print detailed information for the first few samples
+        # Keep track of the 50 largest compositions
+        if len(largest_compositions) < 50:
+            heappush(largest_compositions, (composition_length, chem_form))
+        elif composition_length > largest_compositions[0][0]:
+            heappushpop(largest_compositions, (composition_length, chem_form))
+
+        # Print detailed information for the first few samples (unchanged)
         if count < 2:
             print(f"\nSample {count + 1}:")
             print(f"SPG: {spg}, Crystal System: {crysystem}, Bravais Lattice Type: {bravislatt_type}")
@@ -149,14 +157,13 @@ def looking_at_data(db_path, max_iterations, plot=False):
             print(f"Atomic Mass: {atomic_mass}")
             print(f"Intensity shape: {len(intensity)}")
             print(f"Lattice distance shape: {len(latt_dis)}")
-            print(f"Composition: {composition}")
-            print(f"Non-zero elements in composition: {np.count_nonzero(composition)}")
+            print(f"Composition: {dict(composition)}")
+            print(f"Number of elements in composition: {len(composition)}")
             
             # Debug prints
             print(f"SPG value: {spg}")
             print(f"Crystal System value: {crysystem}")
             print(f"Bravais Lattice Type value: {bravislatt_type}")
-            print(f"Composition shape: {composition.shape}")
 
         if plot:
             plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, bravislatt_type, image_save_path)
@@ -184,8 +191,8 @@ def looking_at_data(db_path, max_iterations, plot=False):
     print(f"Min elements: {min(composition_lengths)}")
     print(f"Max elements: {max(composition_lengths)}")
     print(f"Total unique elements: {len(element_counts)}")
-    print("Top 10 most common elements:")
-    for elem, count in sorted(element_counts.items(), key=lambda x: x[1], reverse=True)[:10]:
+    print("Most common elements:")
+    for elem, count in sorted(element_counts.items(), key=lambda x: x[1], reverse=True)[:118]:
         print(f"  {elem}: {count}")
 
     # Check for potential issues
@@ -200,6 +207,11 @@ def looking_at_data(db_path, max_iterations, plot=False):
 
     if len(element_counts) < len(element_set):
         print(f"\nNOTE: Only {len(element_counts)} out of {len(element_set)} possible elements are present in the dataset")
+
+    # Print the 50 largest compositions
+    print("\n50 Largest Compositions:")
+    for size, formula in sorted(largest_compositions, reverse=True):
+        print(f"Size: {size}, Formula: {formula}")
 
     return
 
@@ -229,13 +241,14 @@ def analyze_space_groups(databs, max_iterations):
     for spg, percentage in sorted_percentages:
         print(f"Space Group {spg}: {percentage:.2f}%")
 
+
 if __name__ == "__main__":
     image_save_path = "/home/jsprigg/scratch/"
     #image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
 
     # Prints the data, you can also plot it by changing the plot variable
     # The plot is in a loop so be careful.
-    limit = 4500         # The amount of XRD rows you want to go through
+    limit = 4900         # The amount of XRD rows you want to go through
     plot = False
     looking_at_data(databs, limit, plot)
 
