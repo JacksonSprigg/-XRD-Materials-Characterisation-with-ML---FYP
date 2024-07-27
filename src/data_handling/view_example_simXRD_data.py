@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from ase.db import connect
+from collections import Counter
 
 ### Let's look at the simXRD data ###
 
@@ -45,7 +46,7 @@ from ase.db import connect
 train_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/train.db"  # Train size = 5000
 test_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/test.db"    # Test size  = 2000
 val_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/val.db"      # Val size   = 1000
-databs = connect(val_data_path)
+databs = connect(train_data_path)
 
 # Creating an XRD plot
 def plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, bravislatt_type, image_save_path):
@@ -116,11 +117,119 @@ def looking_at_data(databs, max_iterations, plot=False):
 
     return 
 
+# Look at the frequency of each space group
+def analyze_space_groups(databs, max_iterations):
+    space_groups = []
+    count = 0
+    for row in databs.select():
+        spg = eval(getattr(row, 'tager'))[0]
+        space_groups.append(spg)
+        count += 1
+        if count == max_iterations:
+            break
+
+    # Count the occurrences of each space group
+    space_group_counts = Counter(space_groups)
+    
+    # Calculate percentages
+    total = sum(space_group_counts.values())
+    space_group_percentages = {spg: (count / total) * 100 for spg, count in space_group_counts.items()}
+    
+    # Sort the dictionary by value (percentage) in descending order
+    sorted_percentages = sorted(space_group_percentages.items(), key=lambda x: x[1], reverse=True)
+    
+    # Print the results
+    print("Space Group Frequencies:")
+    for spg, percentage in sorted_percentages:
+        print(f"Space Group {spg}: {percentage:.2f}%")
+
 if __name__ == "__main__":
     image_save_path = "/home/jsprigg/scratch/"
     #image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
 
     # Generates plots
-    limit = 5       # The amount of XRD rows you want to go through
-    plot  = True    # This will save the matplots to scratch folder
-    looking_at_data(databs, limit, plot=plot)
+    limit = 5          # The amount of XRD rows you want to go through
+    plot  = False      # This will save the matplots to scratch folder
+    #looking_at_data(databs, limit, plot=plot)
+
+    # This function shows the frequency of each space group in the dataset.
+    analyze_space_groups(databs, max_iterations=float('inf'))
+
+# Here is an output of analyze_space_groups() for the partial train dataset.
+
+# Space Group Frequencies:
+# Space Group 38: 25.90%
+# Space Group 216: 10.30%
+# Space Group 221: 7.90%
+# Space Group 225: 6.40%
+# Space Group 187: 4.70%
+# Space Group 1: 4.30%
+# Space Group 25: 3.20%
+# Space Group 11: 3.10%
+# Space Group 63: 2.60%
+# Space Group 62: 2.40%
+# Space Group 12: 2.40%
+# Space Group 2: 2.20%
+# Space Group 123: 2.00%
+# Space Group 194: 1.90%
+# Space Group 139: 1.80%
+# Space Group 191: 1.60%
+# Space Group 14: 1.30%
+# Space Group 6: 1.10%
+# Space Group 71: 1.00%
+# Space Group 15: 0.90%
+# Space Group 115: 0.80%
+# Space Group 65: 0.70%
+# Space Group 229: 0.60%
+# Space Group 36: 0.60%
+# Space Group 8: 0.60%
+# Space Group 47: 0.60%
+# Space Group 129: 0.50%
+# Space Group 9: 0.50%
+# Space Group 7: 0.50%
+# Space Group 5: 0.40%
+# Space Group 19: 0.40%
+# Space Group 51: 0.40%
+# Space Group 140: 0.40%
+# Space Group 44: 0.30%
+# Space Group 4: 0.30%
+# Space Group 107: 0.30%
+# Space Group 119: 0.20%
+# Space Group 131: 0.20%
+# Space Group 186: 0.20%
+# Space Group 189: 0.20%
+# Space Group 64: 0.20%
+# Space Group 13: 0.20%
+# Space Group 122: 0.20%
+# Space Group 40: 0.20%
+# Space Group 74: 0.20%
+# Space Group 72: 0.20%
+# Space Group 141: 0.20%
+# Space Group 60: 0.20%
+# Space Group 77: 0.10%
+# Space Group 58: 0.10%
+# Space Group 124: 0.10%
+# Space Group 37: 0.10%
+# Space Group 26: 0.10%
+# Space Group 121: 0.10%
+# Space Group 20: 0.10%
+# Space Group 61: 0.10%
+# Space Group 174: 0.10%
+# Space Group 86: 0.10%
+# Space Group 21: 0.10%
+# Space Group 69: 0.10%
+# Space Group 57: 0.10%
+# Space Group 127: 0.10%
+# Space Group 53: 0.10%
+# Space Group 24: 0.10%
+# Space Group 46: 0.10%
+# Space Group 99: 0.10%
+# Space Group 10: 0.10%
+# Space Group 28: 0.10%
+# Space Group 33: 0.10%
+# Space Group 193: 0.10%
+# Space Group 180: 0.10%
+# Space Group 3: 0.10%
+# Space Group 96: 0.10%
+# Space Group 85: 0.10%
+# Space Group 29: 0.10%

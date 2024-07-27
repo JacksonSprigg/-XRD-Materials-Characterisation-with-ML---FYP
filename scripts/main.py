@@ -44,10 +44,10 @@ def setup_device(model):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return model.to(device), device
 
-def save_model(model, final_loss, accuracy):
+def save_model(model, final_loss, test_accuracy):
     # Save the model with its important characteristics
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    model_name = f"{config.MODEL_TYPE}_loss{final_loss:.4f}_accuracy_{accuracy:.2f}_data_{config.NAME_OF_DATA_USED}_time_{current_time}.pth"
+    model_name = f"{config.MODEL_TYPE}_testloss{final_loss:.4f}_testaccuracy_{test_accuracy:.2f}_data_{config.NAME_OF_DATA_USED}_time_{current_time}.pth"
     full_path = f'{config.MODEL_SAVE_DIR}/{model_name}'
     torch.save(model.state_dict(), full_path)
     return full_path, model_name
@@ -74,7 +74,7 @@ def main():
 
     # Train the model
     trained_model, final_loss, accuracy = train(
-        model, train_loader, val_loader, criterion, optimizer, 
+        model, train_loader, val_loader, test_loader, criterion, optimizer, 
         device, config.NUM_EPOCHS
     )
 

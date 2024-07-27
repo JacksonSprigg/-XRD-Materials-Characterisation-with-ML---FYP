@@ -10,7 +10,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import torch.nn as nn
 import torch.optim as optim
 from src.models.CNNten import CNNten
-from src.models.small_FCN import small_FCN
+from src.models.FCNten import FCNten
+#from src.models.CrystalNet import 
 
 # Paths
 DATA_DIR = '/monfs01/projects/ys68/XRD_ML/simXRD_partial_data'
@@ -25,29 +26,29 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "CNNten"                # Options: "CNNten", "small_FCN"
+MODEL_TYPE = "FCNten"                # Options: "CNNten", "FCNten"
 CRITERION_TYPE = "CrossEntropyLoss"  # Options: "CrossEntropyLoss", "MSELoss"
 OPTIMIZER_TYPE = "Adam"              # Options: "Adam", "SGD"
 
 # Hyper Parasms
 LEARNING_RATE = 0.001
 BATCH_SIZE = 32
-NUM_EPOCHS = 15
+NUM_EPOCHS = 20
 
 # Data Loading Settings
 NUM_WORKERS = 8
 
 # WandB configuration (Note that there is already a basic WandB log in train.py)
-WANDB_PROJECT_NAME = "test-run"
+WANDB_PROJECT_NAME = "test_2"
 WANDB_SAVE_DIR = "/monfs01/projects/ys68/XRD_ML"
 SAVE_MODEL_TO_WANDB_SERVERS = False
 WANDB_LOG_ARCHITECTURE = False
 
 
-############# Classes (Don't touch, these are options for above) ##################
+############# DON'T TOUCH - Classes are the options for above) ##################
 MODEL_CLASS = {
     "CNNten": CNNten,
-    "small_FCN": small_FCN
+    "FCNten": FCNten
 }
 CRITERION_CLASS = {
     "CrossEntropyLoss": nn.CrossEntropyLoss,
