@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 from ase.db import connect
 from collections import Counter
+import torch
+import numpy as np
 
 ### Let's look at the simXRD data ###
 
@@ -87,14 +89,33 @@ def plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, b
 
     return
 
-# print values if you want a better idea of what they look like
-def looking_at_data(databs, max_iterations, plot=False):
+# Have a look at the data
+def looking_at_data(db_path, max_iterations, plot=False):
     count = 0
+    
+    spg_values = []
+    crysystem_values = []
+    blt_values = []
+    composition_lengths = []
+    element_counts = {}
+
+    element_set = set([
+        'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
+        'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K', 'Ca',
+        'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn',
+        'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 'Rb', 'Sr', 'Y', 'Zr',
+        'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn',
+        'Sb', 'Te', 'I', 'Xe', 'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd',
+        'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb',
+        'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg',
+        'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 'Fr', 'Ra', 'Ac', 'Th',
+        'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm',
+        'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds',
+        'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
+    ])
+
     for row in databs.select():
-
-        # Note, element is a good form for feeding to ML, chem_form is good for reading
         element = getattr(row, 'symbols')
-
         latt_dis = eval(getattr(row, 'latt_dis'))
         intensity = eval(getattr(row, 'intensity'))
 
@@ -105,17 +126,82 @@ def looking_at_data(databs, max_iterations, plot=False):
         chem_form = getattr(row, 'chem_form')
         atomic_mass = getattr(row, 'mass')
 
-        simulation_params = eval(getattr(row, 'simulation_param'))
+        # Collect values for analysis
+        spg_values.append(spg)
+        crysystem_values.append(crysystem)
+        blt_values.append(bravislatt_type)
+        composition_lengths.append(len(element))
 
-        # Generate the plot
+        # Process composition
+        composition = np.zeros(len(element_set), dtype=np.float32)
+        for elem in element:
+            if elem in element_set:
+                composition[list(element_set).index(elem)] += 1
+                element_counts[elem] = element_counts.get(elem, 0) + 1
+        composition /= len(element)
+
+        # Print detailed information for the first few samples
+        if count < 2:
+            print(f"\nSample {count + 1}:")
+            print(f"SPG: {spg}, Crystal System: {crysystem}, Bravais Lattice Type: {bravislatt_type}")
+            print(f"Chemical Formula: {chem_form}")
+            print(f"Elements: {element}")
+            print(f"Atomic Mass: {atomic_mass}")
+            print(f"Intensity shape: {len(intensity)}")
+            print(f"Lattice distance shape: {len(latt_dis)}")
+            print(f"Composition: {composition}")
+            print(f"Non-zero elements in composition: {np.count_nonzero(composition)}")
+            
+            # Debug prints
+            print(f"SPG value: {spg}")
+            print(f"Crystal System value: {crysystem}")
+            print(f"Bravais Lattice Type value: {bravislatt_type}")
+            print(f"Composition shape: {composition.shape}")
+
         if plot:
             plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, bravislatt_type, image_save_path)
-
+        
         count += 1
         if count == max_iterations:
             break
 
-    return 
+    # Analyze collected data
+    print("\nData Analysis:")
+    print(f"Total samples analyzed: {count}")
+    
+    print("\nSPG:")
+    print(f"Range: {min(spg_values)} - {max(spg_values)}")
+    print(f"Unique values: {sorted(set(spg_values))}")
+    
+    print("\nCrystal System:")
+    print(f"Range: {min(crysystem_values)} - {max(crysystem_values)}")
+    print(f"Unique values: {sorted(set(crysystem_values))}")
+    
+    print("\nBravais Lattice Type:")
+    print(f"Unique values: {sorted(set(blt_values))}")
+    
+    print("\nComposition:")
+    print(f"Min elements: {min(composition_lengths)}")
+    print(f"Max elements: {max(composition_lengths)}")
+    print(f"Total unique elements: {len(element_counts)}")
+    print("Top 10 most common elements:")
+    for elem, count in sorted(element_counts.items(), key=lambda x: x[1], reverse=True)[:10]:
+        print(f"  {elem}: {count}")
+
+    # Check for potential issues
+    if min(spg_values) < 1 or max(spg_values) > 230:
+        print("\nWARNING: SPG values out of expected range (1-230)")
+    
+    if min(crysystem_values) < 1 or max(crysystem_values) > 7:
+        print("\nWARNING: Crystal system values out of expected range (1-7)")
+    
+    if len(set(blt_values)) != 6:
+        print("\nWARNING: Unexpected number of unique Bravais lattice types (expected 6)")
+
+    if len(element_counts) < len(element_set):
+        print(f"\nNOTE: Only {len(element_counts)} out of {len(element_set)} possible elements are present in the dataset")
+
+    return
 
 # Look at the frequency of each space group
 def analyze_space_groups(databs, max_iterations):
@@ -147,13 +233,14 @@ if __name__ == "__main__":
     image_save_path = "/home/jsprigg/scratch/"
     #image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
 
-    # Generates plots
-    limit = 5          # The amount of XRD rows you want to go through
-    plot  = False      # This will save the matplots to scratch folder
-    #looking_at_data(databs, limit, plot=plot)
+    # Prints the data, you can also plot it by changing the plot variable
+    # The plot is in a loop so be careful.
+    limit = 4500         # The amount of XRD rows you want to go through
+    plot = False
+    looking_at_data(databs, limit, plot)
 
     # This function shows the frequency of each space group in the dataset.
-    analyze_space_groups(databs, max_iterations=float('inf'))
+    # analyze_space_groups(databs, max_iterations=float('inf'))
 
 # Here is an output of analyze_space_groups() for the partial train dataset.
 

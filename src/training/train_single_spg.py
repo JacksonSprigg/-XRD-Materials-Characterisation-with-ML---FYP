@@ -2,16 +2,19 @@ import torch
 import wandb
 from tqdm import tqdm
 
-def train(model, train_loader, val_loader, test_loader, criterion, optimizer, device, num_epochs):
+def train_single_spg(model, train_loader, val_loader, test_loader, criterion, optimizer, device, num_epochs):
     for epoch in range(num_epochs):
         model.train()
         train_loss = 0.0
-        for batch_idx, (data, target) in enumerate(tqdm(train_loader, desc=f"Epoch {epoch+1} Training")):
+        for batch_idx, batch in enumerate(tqdm(train_loader, desc=f"Epoch {epoch+1} Training")):
+            
+            # Unpack
+            data, space_group = batch[0], batch[1]
             
             # Reshape data: [batch_size, 3501] -> [batch_size, 1, 3501]
             # Move to device
             data = data.unsqueeze(1).to(device)
-            target = target.to(device)
+            target = space_group.to(device)
             
             optimizer.zero_grad()
             output = model(data)
@@ -27,9 +30,9 @@ def train(model, train_loader, val_loader, test_loader, criterion, optimizer, de
         
         # Log metrics to wandb every epoch
         wandb.log({
-            "train_loss": train_loss,
-            "val_loss": val_loss,
-            "val_accuracy": val_accuracy
+            "train_spg_loss": train_loss,
+            "val_spg_loss": val_loss,
+            "val_spg_accuracy": val_accuracy
         })
         
         print(f'Epoch {epoch+1}: Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.2f}%')
@@ -39,8 +42,8 @@ def train(model, train_loader, val_loader, test_loader, criterion, optimizer, de
     
     print(f'Test loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.2f}%')
     wandb.log({
-        "test_loss": test_loss,
-        "test_accuracy": test_accuracy
+        "test_spg_loss": test_loss,
+        "test_spg_accuracy": test_accuracy
     })
 
     return model, test_loss, test_accuracy
@@ -52,12 +55,14 @@ def evaluate(model, data_loader, criterion, device):
     correct = 0
     total = 0
     with torch.no_grad():
-        for data, target in tqdm(data_loader, desc="Evaluation"):
+        for batch in tqdm(data_loader, desc="Evaluation"):
+
+            data, space_group = batch[0], batch[1]
             
             # Reshape data: [batch_size, 3501] -> [batch_size, 1, 3501]
             # Move to device
             data = data.unsqueeze(1).to(device)
-            target = target.to(device)
+            target = space_group.to(device)
             
             output = model(data)
             total_loss += criterion(output, target).item()
