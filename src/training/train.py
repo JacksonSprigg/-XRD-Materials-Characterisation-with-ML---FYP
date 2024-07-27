@@ -48,9 +48,8 @@ def train(model, train_loader, val_loader, criterion, optimizer, device, num_epo
         val_loss /= total
         accuracy = 100. * correct / total
         
-        # Log metrics to wandb
+        # Log metrics to wandb every epoch
         wandb.log({
-            "epoch": epoch + 1,
             "train_loss": train_loss,
             "val_loss": val_loss,
             "accuracy": accuracy

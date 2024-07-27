@@ -1,67 +1,91 @@
-########## Comment this out if you are having path errors #########################
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-##################################################################################
-
 import torch
 import torch.nn as nn
-import torch.optim as optim
 import wandb
 import datetime
+import config
 from src.data_handling.simXRD_data_loader import create_data_loaders
 from src.training.train import train
-from src.models.CNNten import CNNten
 
-# Name the model:
-model_type = "CNNten"
+def setup_wandb():
+    wandb.require("core") # This line maybe fixes a retry upload bug I was having. See: https://github.com/wandb/wandb/issues/4929
+    return wandb.init(
+        project=config.WANDB_PROJECT_NAME, 
+        dir=config.WANDB_SAVE_DIR, 
+        config={
+            "model_type": config.MODEL_TYPE,
+            "criterion_type": config.CRITERION_TYPE,
+            "optimizer_type": config.OPTIMIZER_TYPE,
+            "batch_size": config.BATCH_SIZE,
+            "num_workers": config.NUM_WORKERS,       
+            "learning_rate": config.LEARNING_RATE,
+            "num_epochs": config.NUM_EPOCHS,
+        }
+    )
 
-# Initialize wandb
-wandb.require("core") # This line fixes a retry upload bug I was having. See: https://github.com/wandb/wandb/issues/4929
-wandb.init(
-    project="test-run", 
+def setup_model():
+    # Initialize the model, loss function, and optimiser
+    model_class = config.MODEL_CLASS[config.MODEL_TYPE]
+    model = model_class()
+    
+    criterion_class = config.CRITERION_CLASS[config.CRITERION_TYPE]
+    criterion = criterion_class()
+    
+    optimizer_class = config.OPTIMIZER_CLASS[config.OPTIMIZER_TYPE]
+    optimizer = optimizer_class(model.parameters(), lr=config.LEARNING_RATE)
+    
+    return model, criterion, optimizer
 
-    dir="/monfs01/projects/ys68/XRD_ML",
+# THIS NEED TO BE UPDATED, THE METHOD IS NOT STANDARD
+def setup_device(model):
+    # Setup GPUs
+    if torch.cuda.device_count() > 1:
+        print(f"Using {torch.cuda.device_count()} GPUs!")
+        model = nn.DataParallel(model)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    return model.to(device), device
 
-    config={
-    "batch_size": 32,
-    "num_workers": 8,       # Set to the amount of CPU cores as a practice?
-    "learning_rate": 0.001,
-    "num_epochs": 15,        # Reduced number of epochs for the test run
-    }
-)
+def save_model(model, final_loss, accuracy):
+    # Save the model with its important characteristics
+    current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    model_name = f"{config.MODEL_TYPE}_loss{final_loss:.4f}_accuracy_{accuracy:.2f}_data_{config.NAME_OF_DATA_USED}_time_{current_time}.pth"
+    full_path = f'{config.MODEL_SAVE_DIR}/{model_name}'
+    torch.save(model.state_dict(), full_path)
+    return full_path, model_name
 
-# Access hyperparameters from wandb config
-config = wandb.config
+def main():
+    # Start WandB
+    wandb_run = setup_wandb()
 
-# Create data loaders
-train_loader, val_loader, test_loader = create_data_loaders('/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/train.db', '/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/val.db', '/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/test.db', config.batch_size, config.num_workers)
+    # Create data loaders
+    train_loader, val_loader, test_loader = create_data_loaders(
+        config.TRAIN_DATA, config.VAL_DATA, config.TEST_DATA, 
+        config.BATCH_SIZE, config.NUM_WORKERS
+    )
 
-# Initialize model, loss, and optimizer
-model = CNNten()
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
+    # Setup model, loss, and optimizer
+    model, criterion, optimizer = setup_model()
 
-# Check for GPUs, if more than one, use them all
-if torch.cuda.device_count() > 1:
-    print(f"Using {torch.cuda.device_count()} GPUs!")
-    model = nn.DataParallel(model)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = model.to(device)
+    # Setup device
+    model, device = setup_device(model)
 
-# Log the model architecture
-wandb.watch(model)
+    # Log the model architecture
+    if config.WANDB_LOG_ARCHITECTURE:
+        wandb.watch(model)
 
-# Train the model
-trained_model, final_loss, accuracy = train(model, train_loader, val_loader, criterion, optimizer, device, config.num_epochs)
+    # Train the model
+    trained_model, final_loss, accuracy = train(
+        model, train_loader, val_loader, criterion, optimizer, 
+        device, config.NUM_EPOCHS
+    )
 
-# Create a unique model name including the model type and loss
-current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-model_name = f"{model_type}_loss{final_loss:.4f}_accuracy{accuracy:.4f}_{current_time}.pth"
+    # Save the model
+    save_path, model_name = save_model(trained_model, final_loss, accuracy)
 
-# Save the trained model
-torch.save(trained_model.state_dict(), f'/monfs01/projects/ys68/XRD_ML/trained_models/{model_name}')
-wandb.save(f'/monfs01/projects/ys68/XRD_ML/trained_models/{model_name}')
+    if config.SAVE_MODEL_TO_WANDB_SERVERS:
+        wandb.save(save_path)
 
-print(f"Training completed. Model saved as '{model_name}'.")
-wandb.finish()
+    print(f"Training completed. Model saved as '{model_name}'.")
+    wandb_run.finish()
+
+if __name__ == "__main__":
+    main()
