@@ -9,12 +9,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import torch.nn as nn
 import torch.optim as optim
-from src.models.CNNten import CNNten
-from src.models.FCN_multi_task import FCN_multi_task
+
+# Import models
+from src.models.CNNten import CNNten, CNNten_multi_task
+from src.models.smallFCN import smallFCN, smallFCN_multi_task
 from src.models.MLPten import MLPten
-from src.models.CNNten_multi_task import CNNten_multi_task
 from src.models.Jackson import Jackson
-#from src.models.CrystalNet import 
 
 # Paths
 DATA_DIR = '/monfs01/projects/ys68/XRD_ML/simXRD_partial_data'
@@ -29,7 +29,7 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "CNNten_multi_task"        # Options: "CNNten", "FCN", "MLPten", "CNNten_multi_task", "Claude"
+MODEL_TYPE = "smallFCN_multi_task"   # Options: "CNNten", CNNten_multi_task", "smallFCN", "smallFCN_multi_task", "Jackson"
 MULTI_TASK = True                    # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
 CRITERION_TYPE = "CrossEntropyLoss"  # Options: "CrossEntropyLoss", "MSELoss"
 OPTIMIZER_TYPE = "Adam"              # Options: "Adam", "SGD"
@@ -57,12 +57,13 @@ SAVE_MODEL_TO_WANDB_SERVERS = False
 WANDB_LOG_ARCHITECTURE = False
 
 
-############# DON'T TOUCH - Classes are the options for above) ##################
+############# DON'T TOUCH - Classes are the options for above ##################
 MODEL_CLASS = {
     "CNNten": CNNten,
-    "FCN_multi_task": FCN_multi_task,
-    "MLPten": MLPten,
     "CNNten_multi_task": CNNten_multi_task,
+    "smallFCN": smallFCN,
+    "smallFCN_multi_task": smallFCN_multi_task,
+    "MLPten": MLPten,
     "Jackson": Jackson
 }
 CRITERION_CLASS = {
