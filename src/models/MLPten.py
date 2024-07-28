@@ -15,7 +15,7 @@ class MLPten(nn.Module):
         
         self.dropout = nn.Dropout(0.33)
         
-        self.fc5 = nn.Linear(500, 230)  # Output size is 230
+        self.fc5 = nn.Linear(500, 230)
 
     def forward(self, x):
         # Flatten the input

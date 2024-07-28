@@ -2,6 +2,8 @@ import torch
 import wandb
 from tqdm import tqdm
 
+# TODO: Switch argmax to softmax in models
+
 def train_single_spg(model, train_loader, val_loader, test_loader, criterion, optimizer, device, num_epochs):
     for epoch in range(num_epochs):
         model.train()

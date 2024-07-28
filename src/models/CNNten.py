@@ -4,6 +4,8 @@ import torch.nn.functional as F
 # Model from:
 # https://github.com/compasszzn/XRDBench/blob/main/model/CNN10.py
 
+# TODO: Consider adding softmax
+
 class CNNten(nn.Module):
     def __init__(self):
         super(CNNten, self).__init__()

@@ -1,7 +1,15 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-# Very simple multi-task added in the final layer.
+# Adapted from CNNten to be multi-task
+
+# Input shape: torch.Size([32, 1, 3501])
+# After conv1 + pool + dropout: torch.Size([32, 24, 1745])
+# After conv2 + pool + dropout: torch.Size([32, 24, 867])
+# After conv3 + pool + dropout: torch.Size([32, 24, 428])
+# After conv4 + pool + dropout: torch.Size([32, 24, 208])
+# After flatten: torch.Size([32, 4992])
+# After fcl1 + dropout: torch.Size([32, 2000])
 
 class CNNten_multi_task(nn.Module):
     def __init__(self):

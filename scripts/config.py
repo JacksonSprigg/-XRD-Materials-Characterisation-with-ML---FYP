@@ -10,9 +10,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import torch.nn as nn
 import torch.optim as optim
 from src.models.CNNten import CNNten
-from src.models.FCNten import FCNten
+from src.models.FCN_multi_task import FCN_multi_task
 from src.models.MLPten import MLPten
 from src.models.CNNten_multi_task import CNNten_multi_task
+from src.models.Jackson import Jackson
 #from src.models.CrystalNet import 
 
 # Paths
@@ -28,7 +29,7 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "CNNten_multi_task"     # Options: "CNNten", "FCNten", "MLPten", "CNNten_multi_task"
+MODEL_TYPE = "CNNten_multi_task"        # Options: "CNNten", "FCN", "MLPten", "CNNten_multi_task", "Claude"
 MULTI_TASK = True                    # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
 CRITERION_TYPE = "CrossEntropyLoss"  # Options: "CrossEntropyLoss", "MSELoss"
 OPTIMIZER_TYPE = "Adam"              # Options: "Adam", "SGD"
@@ -59,9 +60,10 @@ WANDB_LOG_ARCHITECTURE = False
 ############# DON'T TOUCH - Classes are the options for above) ##################
 MODEL_CLASS = {
     "CNNten": CNNten,
-    "FCNten": FCNten,
+    "FCN_multi_task": FCN_multi_task,
     "MLPten": MLPten,
-    "CNNten_multi_task": CNNten_multi_task
+    "CNNten_multi_task": CNNten_multi_task,
+    "Jackson": Jackson
 }
 CRITERION_CLASS = {
     "CrossEntropyLoss": nn.CrossEntropyLoss,

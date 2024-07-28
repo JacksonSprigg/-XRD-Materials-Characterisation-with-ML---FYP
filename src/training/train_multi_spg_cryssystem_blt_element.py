@@ -3,6 +3,8 @@ import wandb
 from tqdm import tqdm
 from sklearn.metrics import f1_score
 
+# TODO: Switch argmax to softmax in models
+
 def train_multi_spg_cryssystem_blt_element(model, train_loader, val_loader, test_loader, criteria, optimizer, device, num_epochs):
     
     # Initialize running averages for loss normalization
