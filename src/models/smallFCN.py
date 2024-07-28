@@ -9,6 +9,8 @@ import torch.nn.functional as F
 # I alter some of the final conv layers to account for the smaller input data (1,3501)
 # I augment a second module to allow for multi-task outputs.
 
+# TODO: Check it is implememnted correctly..
+
 class smallFCN(nn.Module):
     def __init__(self):
         super(smallFCN, self).__init__()
@@ -53,7 +55,6 @@ class smallFCN(nn.Module):
         spg_out = self.dropout(F.relu(self.spg_conv_1(x)))
         spg_out = self.spg_conv_2(spg_out)
         spg_out = self.flatten(spg_out)
-        spg_out = F.softmax(spg_out, dim=1)
         
         return spg_out
 
@@ -111,17 +112,14 @@ class smallFCN_multi_task(nn.Module):
         crysystem_out = self.dropout(F.relu(self.crysystem_conv_1(x)))
         crysystem_out = self.crysystem_conv_2(crysystem_out)
         crysystem_out = self.flatten(crysystem_out)
-        crysystem_out = F.softmax(crysystem_out, dim=1)
 
         blt_out = self.dropout(F.relu(self.blt_conv_1(x)))
         blt_out = self.blt_conv_2(blt_out)
         blt_out = self.flatten(blt_out)
-        blt_out = F.softmax(blt_out, dim=1)
 
         spg_out = self.dropout(F.relu(self.spg_conv_1(x)))
         spg_out = self.spg_conv_2(spg_out)
         spg_out = self.flatten(spg_out)
-        spg_out = F.softmax(spg_out, dim=1)
 
         composition_out = self.dropout(F.relu(self.composition_conv_1(x)))
         composition_out = self.composition_conv_2(composition_out)

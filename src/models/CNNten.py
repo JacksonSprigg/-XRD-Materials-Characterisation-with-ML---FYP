@@ -5,7 +5,11 @@ import torch.nn.functional as F
 # https://github.com/compasszzn/XRDBench/blob/main/model/CNN10.py
 
 # Mofidications:
-# I added softmax to the final layer
+# 
+
+# Note, adding softmax in the final layer made the model perform substantially worse.
+
+# TODO: Try positional encoding
 
 class CNNten(nn.Module):
     def __init__(self):
@@ -37,8 +41,6 @@ class CNNten(nn.Module):
         x = self.dropout(F.relu(self.fcl1(x)))
 
         x = self.fcl2(x)
-
-        x = F.softmax(x, dim=1) # Added from original code
         
         return x
 

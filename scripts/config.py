@@ -45,7 +45,7 @@ MULTI_TASK_CRITERIA = {
 # Hyper Parasms
 LEARNING_RATE = 0.001
 BATCH_SIZE = 32
-NUM_EPOCHS = 25
+NUM_EPOCHS = 70
 
 # Data Loading Settings
 NUM_WORKERS = 8

@@ -242,6 +242,8 @@ def analyze_space_groups(databs, max_iterations):
         print(f"Space Group {spg}: {percentage:.2f}%")
 
 
+
+
 if __name__ == "__main__":
     image_save_path = "/home/jsprigg/scratch/"
     #image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
