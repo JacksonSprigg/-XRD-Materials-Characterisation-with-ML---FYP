@@ -3,7 +3,9 @@ import wandb
 from tqdm import tqdm
 from sklearn.metrics import f1_score
 
-# TODO: Switch argmax to softmax in models
+# TODO: Is normalised loss the best method here?
+# TODO: Document momentum and add it as an input + figure out if running losses is the right call
+# TODO: Draw this function out to make sure it makes sense for our task
 
 def train_multi_spg_cryssystem_blt_element(model, train_loader, val_loader, test_loader, criteria, optimizer, device, num_epochs):
     
