@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 from ase.db import connect
 from collections import Counter
-import torch
-import numpy as np
 from heapq import heappush, heappushpop
 
 ### Let's look at the simXRD data ###
@@ -218,28 +216,39 @@ def looking_at_data(db_path, max_iterations, plot=False):
 # Look at the frequency of each space group
 def analyze_space_groups(databs, max_iterations):
     space_groups = []
+    crystal_systems = []
+    bravais_lattice_types = []
     count = 0
     for row in databs.select():
         spg = eval(getattr(row, 'tager'))[0]
+        crysystem = eval(getattr(row, 'tager'))[1]
+        bravislatt_type = eval(getattr(row, 'tager'))[2]
         space_groups.append(spg)
+        crystal_systems.append(crysystem)
+        bravais_lattice_types.append(bravislatt_type)
         count += 1
         if count == max_iterations:
             break
 
-    # Count the occurrences of each space group
-    space_group_counts = Counter(space_groups)
-    
-    # Calculate percentages
-    total = sum(space_group_counts.values())
-    space_group_percentages = {spg: (count / total) * 100 for spg, count in space_group_counts.items()}
-    
-    # Sort the dictionary by value (percentage) in descending order
-    sorted_percentages = sorted(space_group_percentages.items(), key=lambda x: x[1], reverse=True)
-    
-    # Print the results
-    print("Space Group Frequencies:")
-    for spg, percentage in sorted_percentages:
-        print(f"Space Group {spg}: {percentage:.2f}%")
+    # Function to calculate and print frequencies
+    def calculate_and_print_frequencies(data, label):
+        counts = Counter(data)
+        total = sum(counts.values())
+        percentages = {item: (count / total) * 100 for item, count in counts.items()}
+        sorted_percentages = sorted(percentages.items(), key=lambda x: x[1], reverse=True)
+        
+        print(f"\n{label} Frequencies:")
+        for item, percentage in sorted_percentages:
+            print(f"{item}: {percentage:.2f}%")
+
+    # Calculate and print frequencies for Space Groups
+    calculate_and_print_frequencies(space_groups, "Space Group")
+
+    # Calculate and print frequencies for Crystal Systems
+    calculate_and_print_frequencies(crystal_systems, "Crystal System")
+
+    # Calculate and print frequencies for Bravais Lattice Types
+    calculate_and_print_frequencies(bravais_lattice_types, "Bravais Lattice Type")
 
 
 
@@ -250,12 +259,12 @@ if __name__ == "__main__":
 
     # Prints the data, you can also plot it by changing the plot variable
     # The plot is in a loop so be careful.
-    limit = 4900         # The amount of XRD rows you want to go through
+    limit = 4950         # The amount of XRD rows you want to go through
     plot = False
-    looking_at_data(databs, limit, plot)
+    #looking_at_data(databs, limit, plot)
 
-    # This function shows the frequency of each space group in the dataset.
-    # analyze_space_groups(databs, max_iterations=float('inf'))
+    # This function shows the frequency of each group in the dataset. I have printed the data below so that you don't have to run it.
+    analyze_space_groups(databs, limit)
 
 # Here is an output of analyze_space_groups() for the partial train dataset.
 
@@ -335,3 +344,18 @@ if __name__ == "__main__":
 # Space Group 96: 0.10%
 # Space Group 85: 0.10%
 # Space Group 29: 0.10%
+
+# Crystal System Frequencies:
+# 4: 40.40%
+# 1: 25.25%
+# 6: 11.52%
+# 2: 8.99%
+# 3: 7.37%
+# 7: 6.46%
+
+# Bravais Lattice Type Frequencies:
+# P: 42.12%
+# A: 25.96%
+# F: 16.97%
+# C: 9.29%
+# I: 5.66%

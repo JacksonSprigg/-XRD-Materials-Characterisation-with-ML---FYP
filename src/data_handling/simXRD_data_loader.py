@@ -42,7 +42,7 @@ class simXRDDataset(Dataset):
         element = getattr(row, 'symbols')
 
         # This is so that it goes from 0-6 ,instead of 1-7
-        ### YOU WILL NEED TO ADD THE ONE BACK IN WHEN USING FOR INFERENCE ####
+        # TODO: YOU WILL NEED TO ADD THE ONE BACK IN WHEN USING FOR INFERENCE ####
         crysystem -= 1
         space_group -= 1
 
@@ -65,6 +65,7 @@ class simXRDDataset(Dataset):
         
         return intensity_tensor, space_group_tensor, crysystem_tensor, blt_tensor, element_composition_tensor
 
+# Data loaders for training
 def create_data_loaders(train_path, val_path, test_path, batch_size=32, num_workers=3):
     train_dataset = simXRDDataset(train_path)
     val_dataset = simXRDDataset(val_path)
@@ -75,3 +76,9 @@ def create_data_loaders(train_path, val_path, test_path, batch_size=32, num_work
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     
     return train_loader, val_loader, test_loader
+
+# Data loader for inference
+def create_inference_loader(inference_path, batch_size=32, num_workers=3):
+    inference_dataset = simXRDDataset(inference_path)
+    inference_loader = DataLoader(inference_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+    return inference_loader
