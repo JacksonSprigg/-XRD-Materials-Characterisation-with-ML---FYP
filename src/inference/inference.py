@@ -10,18 +10,22 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 import torch
 
 # Import config
-import scripts.config_inference as config_inference
+import scripts.inference.config_inference as config_inference
 
 # Import functions
 from src.data_handling.simXRD_data_loader import create_inference_loader
-from scripts.main_training import setup_device
 
 
 def load_model(model_path):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model_class = config_inference.MODEL_CLASS[config_inference.MODEL_TYPE]
     model = model_class()
-    model.load_state_dict(torch.load(model_path))
-    return model
+    
+    # Load the state dict to the appropriate device
+    state_dict = torch.load(model_path, map_location=device)
+    model.load_state_dict(state_dict)
+    
+    return model.to(device), device
 
 def run_inference(model, test_loader, device):
     model.eval()
@@ -52,11 +56,9 @@ def run_inference(model, test_loader, device):
     return all_predictions, all_labels
 
 def main(model_path):
-    # Load the model
-    model = load_model(model_path)
-    
+
     # Setup device
-    model, device = setup_device(model)
+    model, device = load_model(model_path)
 
     # Create data loader for test data
     test_loader = create_inference_loader(

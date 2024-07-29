@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # You shouldn't need this and can comment out this block.
 ##################################################################################################
 
-import torch.nn as nn
+# TODO: MAKE "infer.py"
 
 # Import models
 from src.models.CNNten import CNNten, CNNten_multi_task

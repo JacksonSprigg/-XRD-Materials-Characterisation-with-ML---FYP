@@ -4,7 +4,7 @@ import wandb
 import datetime
 
 # Config
-import scripts.config_training as config_training
+import scripts.training.config_training as config_training
 
 # Functions
 from src.data_handling.simXRD_data_loader import create_data_loaders
