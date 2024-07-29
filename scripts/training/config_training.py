@@ -18,7 +18,7 @@ from src.models.MLPten import MLPten
 from src.models.Jackson import Jackson
 
 # Paths
-DATA_DIR = '/monfs01/projects/ys68/XRD_ML/simXRD_partial_data'
+DATA_DIR = '/monfs01/projects/ys68/XRD_ML/training_data/simXRD_partial_data'
 MODEL_SAVE_DIR = '/monfs01/projects/ys68/XRD_ML/trained_models'
 
 # Data

@@ -1,11 +1,12 @@
 # Ignore the data files
 *.db
+*.pkl
 
 #Ignore wandb
 wandb/
 
 #Ignore trained models
-trained_models/
+*.pth
 
 # Python cache files
 __pycache__/

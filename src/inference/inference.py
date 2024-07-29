@@ -8,6 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 ##################################################################################################
 
 import torch
+import pickle
 
 # Import config
 import scripts.inference.config_inference as config_inference
@@ -15,6 +16,7 @@ import scripts.inference.config_inference as config_inference
 # Import functions
 from src.data_handling.simXRD_data_loader import create_inference_loader
 
+# TODO: Add a function to save data.
 
 def load_model(model_path):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -55,6 +57,11 @@ def run_inference(model, test_loader, device):
 
     return all_predictions, all_labels
 
+def save_results(results, save_path):
+    with open(save_path, 'wb') as f:
+        pickle.dump(results, f)
+    print(f"Results saved to {save_path}")
+
 def main(model_path):
 
     # Setup device
@@ -76,7 +83,14 @@ def main(model_path):
         'labels': labels
     }
 
-    return print(results)
+    # TODO: ALTERABLE SAVE NAME
+    # Save results
+    save_dir = config_inference.INFERENCE_SAVE_DIR
+    os.makedirs(save_dir, exist_ok=True)
+    save_path = os.path.join(config_inference.INFERENCE_SAVE_DIR, 'TEST.pkl')
+    save_results(results, save_path)
+
+    return
     
 
 if __name__ == "__main__":

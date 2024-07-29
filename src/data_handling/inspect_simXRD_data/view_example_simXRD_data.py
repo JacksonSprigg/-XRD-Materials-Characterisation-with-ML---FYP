@@ -34,6 +34,7 @@ from heapq import heappush, heappushpop
 # tager: [Space Group, Crystal System, ??something else??] - I think the something else is bravis lattice types?
 
 # Note the crystal system meaning:
+# TODO: Not sure I have this order right.
 #  1 : Cubic
 #  2 : Hexagonal
 #  3 : Tetragonal

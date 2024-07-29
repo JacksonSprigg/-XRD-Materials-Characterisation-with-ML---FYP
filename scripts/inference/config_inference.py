@@ -9,6 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ##################################################################################################
 
 # TODO: MAKE "infer.py"
+# TODO: MAKE this config easier to navigate
 
 # Import models
 from src.models.CNNten import CNNten, CNNten_multi_task
@@ -17,8 +18,11 @@ from src.models.MLPten import MLPten
 from src.models.Jackson import Jackson
 
 # Paths
-DATA_DIR = '/monfs01/projects/ys68/XRD_ML/simXRD_partial_data'
+DATA_DIR = '/monfs01/projects/ys68/XRD_ML/training_data/simXRD_partial_data'
 MODEL_SAVE_DIR = '/monfs01/projects/ys68/XRD_ML/trained_models'
+INFERENCE_SAVE_DIR = '/monfs01/projects/ys68/XRD_ML/data_collection'
+
+# TODO: MAKE SAVE NAME ALTERABLE
 
 # Data
 INFERENCE_DATA = os.path.join(DATA_DIR, 'test.db')
