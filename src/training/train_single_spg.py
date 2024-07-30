@@ -3,6 +3,7 @@ import wandb
 from tqdm import tqdm
 
 # TODO: Maybe add in function hyper param tuning?
+# TODO: Save best model.
 
 def train_single_spg(model, train_loader, val_loader, test_loader, criterion, optimizer, device, num_epochs):
     for epoch in range(num_epochs):
