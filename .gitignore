@@ -1,6 +1,7 @@
 # Ignore the data files
 *.db
 *.pkl
+*.gz
 
 #Ignore wandb
 wandb/

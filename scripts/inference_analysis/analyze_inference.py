@@ -88,7 +88,7 @@ def analyze_results(results):
                 print("No misclassifications found!")
 
 def main():
-    file_path = '/home/jsprigg/ys68/XRD_ML/inference_data/TEST.pkl'
+    file_path = 'ML_For_XRD_Materials_Characterisation/inference_data/TEST_full.pkl'
     results = load_results(file_path)
     analyze_results(results)
 

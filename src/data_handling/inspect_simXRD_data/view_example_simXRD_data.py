@@ -3,6 +3,13 @@ from ase.db import connect
 from collections import Counter
 from heapq import heappush, heappushpop
 
+# TODO: Deprecate this code
+# TODO: Deprecate this code
+# TODO: This code is a mess.
+# TODO: Deprecate this code
+# TODO: Deprecate this code
+
+
 ### Let's look at the simXRD data ###
 
 # I save plots to /scratch. Don't accidentally overload this storage.
@@ -48,7 +55,8 @@ from heapq import heappush, heappushpop
 train_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/train.db"  # Train size = 5000
 test_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/test.db"    # Test size  = 2000
 val_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/val.db"      # Val size   = 1000
-databs = connect(train_data_path)
+test_full_data_path = "ML_For_XRD_Materials_Characterisation/training_data/simXRD_full_data/test.db" 
+databs = connect(test_full_data_path)
 
 # Creating an XRD plot
 def plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, bravislatt_type, image_save_path):
@@ -118,6 +126,7 @@ def looking_at_data(db_path, max_iterations, plot=False):
     ])
 
     for row in databs.select():
+
         element = getattr(row, 'symbols')
         latt_dis = eval(getattr(row, 'latt_dis'))
         intensity = eval(getattr(row, 'intensity'))
@@ -260,12 +269,12 @@ if __name__ == "__main__":
 
     # Prints the data, you can also plot it by changing the plot variable
     # The plot is in a loop so be careful.
-    limit = 4950         # The amount of XRD rows you want to go through
+    limit = 10         # The amount of XRD rows you want to go through
     plot = False
-    #looking_at_data(databs, limit, plot)
+    looking_at_data(databs, limit, plot)
 
     # This function shows the frequency of each group in the dataset. I have printed the data below so that you don't have to run it.
-    analyze_space_groups(databs, limit)
+    #analyze_space_groups(databs, limit)
 
 # Here is an output of analyze_space_groups() for the partial train dataset.
 

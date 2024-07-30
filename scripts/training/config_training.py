@@ -4,7 +4,7 @@ import os
 # TODO: FIX THIS PATH ERROR
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-# This sets the current path to the parent directory. I was getting annoyed at being cd into the wrong places.
+# This sets the current path to the parent of the parent directory. I was getting annoyed at being cd into the wrong places.
 # You shouldn't need this and can comment out this block.
 ##################################################################################################
 
@@ -18,8 +18,8 @@ from src.models.MLPten import MLPten
 from src.models.Jackson import Jackson
 
 # Paths
-DATA_DIR = '/monfs01/projects/ys68/XRD_ML/training_data/simXRD_partial_data'
-MODEL_SAVE_DIR = '/monfs01/projects/ys68/XRD_ML/trained_models'
+DATA_DIR = 'ML_For_XRD_Materials_Characterisation/training_data/simXRD_partial_data'
+MODEL_SAVE_DIR = 'ML_For_XRD_Materials_Characterisation/trained_models'
 
 # Data
 TRAIN_DATA = os.path.join(DATA_DIR, 'train.db')
@@ -47,17 +47,17 @@ MULTI_TASK_CRITERIA = {
 # Hyper Params
 LEARNING_RATE = 0.0001
 BATCH_SIZE = 32
-NUM_EPOCHS = 20
+NUM_EPOCHS = 100
 
 # Optimiser
 OPTIMIZER_TYPE = "Adam" # Options: "Adam", "SGD"
 
 # Data Loading Settings
-NUM_WORKERS = 8
+NUM_WORKERS = 6
 
 # WandB configuration (Note that there is already a basic WandB log in train.py)
 WANDB_PROJECT_NAME = "FirstModelExperiments"
-WANDB_SAVE_DIR = "/monfs01/projects/ys68/XRD_ML"
+WANDB_SAVE_DIR = "ML_For_XRD_Materials_Characterisation/wandb"
 SAVE_MODEL_TO_WANDB_SERVERS = False
 WANDB_LOG_ARCHITECTURE = False
 

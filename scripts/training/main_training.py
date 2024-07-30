@@ -3,6 +3,15 @@ import torch.nn as nn
 import wandb
 import datetime
 
+######################### READ: idiosyncratic path error #########################################
+# TODO: FIX THIS PATH ERROR
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# This sets the current path to the parent directory. I was getting annoyed at being cd into the wrong places.
+# You shouldn't need this and can comment out this block.
+##################################################################################################
+
 # Config
 import scripts.training.config_training as config_training
 

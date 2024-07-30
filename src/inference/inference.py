@@ -87,7 +87,7 @@ def main(model_path):
     # Save results
     save_dir = config_inference.INFERENCE_SAVE_DIR
     os.makedirs(save_dir, exist_ok=True)
-    save_path = os.path.join(config_inference.INFERENCE_SAVE_DIR, 'TEST.pkl')
+    save_path = os.path.join(config_inference.INFERENCE_SAVE_DIR, 'TEST_full.pkl')
     save_results(results, save_path)
 
     return
