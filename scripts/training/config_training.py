@@ -13,7 +13,7 @@ import torch.optim as optim
 
 # Import models
 from src.models.CNNten import CNNten, CNNten_multi_task
-from src.models.smallFCN import smallFCN, smallFCN_multi_task
+from src.models.smallFCN import smallFCN, smallFCN_multi_task, smallFCN_SelfAttention_multi_task
 from src.models.MLPten import MLPten
 from src.models.Jackson import Jackson
 
@@ -30,8 +30,8 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "CNNten_multi_task"     # Options: "CNNten", CNNten_multi_task", "smallFCN", "smallFCN_multi_task", "Jackson"
-MULTI_TASK = True                    # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
+MODEL_TYPE = "smallFCN_SelfAttention_multi_task"   # Options: "CNNten", CNNten_multi_task", "smallFCN", "smallFCN_multi_task", "smallFCN_SelfAttention_multi_task", "Jackson"
+MULTI_TASK = True                                  # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
 
 # IF SINGLE TASK, loss
 CRITERION_TYPE = "CrossEntropyLoss"  # Options: "CrossEntropyLoss", "MSELoss"
@@ -68,6 +68,7 @@ MODEL_CLASS = {
     "CNNten_multi_task": CNNten_multi_task,
     "smallFCN": smallFCN,
     "smallFCN_multi_task": smallFCN_multi_task,
+    "smallFCN_SelfAttention_multi_task": smallFCN_SelfAttention_multi_task,
     "MLPten": MLPten,
     "Jackson": Jackson
 }

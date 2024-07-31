@@ -1,6 +1,9 @@
 from torch import nn
 import torch.nn.functional as F
 
+# Model from:
+# https://github.com/compasszzn/XRDBench/blob/main/model/CNN11.py
+
 # TODO: Add multi-task
 
 class NoPoolCNN(nn.Module):
