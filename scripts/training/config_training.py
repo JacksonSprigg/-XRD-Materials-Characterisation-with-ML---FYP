@@ -9,9 +9,11 @@ from src.models.smallFCN import smallFCN, smallFCN_multi_task, smallFCN_SelfAtte
 from src.models.MLPten import MLPten
 from src.models.Jackson import Jackson
 
+# TODO: Add a wandb option
+
 # Paths
-DATA_DIR = '/monfs01/projects/ys68/XRD_ML/training_data/simXRD_partial_data'
-MODEL_SAVE_DIR = '/monfs01/projects/ys68/XRD_ML/trained_models'
+DATA_DIR = 'training_data/simXRD_partial_data'
+MODEL_SAVE_DIR = 'trained_models'
 
 # Data
 TRAIN_DATA = os.path.join(DATA_DIR, 'train.db')
@@ -22,7 +24,7 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "smallFCN_SelfAttention_multi_task"   # Options: "CNNten", CNNten_multi_task", "smallFCN", "smallFCN_multi_task", "smallFCN_SelfAttention_multi_task", "Jackson"
+MODEL_TYPE = "smallFCN_SelfAttention_multi_task"   # Options: "CNNten", CNNten_multi_task", "smallFCN", "smallFCN_multi_task", "smallFCN_SelfAttention_multi_task"
 MULTI_TASK = True                                  # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
 
 # IF SINGLE TASK, loss
@@ -48,21 +50,21 @@ OPTIMIZER_TYPE = "Adam" # Options: "Adam", "SGD"
 NUM_WORKERS = 6
 
 # WandB configuration (Note that there is already a basic WandB log in train.py)
+# TODO: USE_WANDB = True
 WANDB_PROJECT_NAME = "FirstModelExperiments"
 WANDB_SAVE_DIR = "ML_For_XRD_Materials_Characterisation/wandb"
 SAVE_MODEL_TO_WANDB_SERVERS = False
 WANDB_LOG_ARCHITECTURE = False
 
-####################################################################################
-############# DON'T TOUCH - Classes contain the options for above ##################
+###########################################################################################
+############# DON'T TOUCH - CThese classes contain the options for above ##################
 MODEL_CLASS = {
     "CNNten": CNNten,
     "CNNten_multi_task": CNNten_multi_task,
     "smallFCN": smallFCN,
     "smallFCN_multi_task": smallFCN_multi_task,
     "smallFCN_SelfAttention_multi_task": smallFCN_SelfAttention_multi_task,
-    "MLPten": MLPten,
-    "Jackson": Jackson
+    "MLPten": MLPten
 }
 CRITERION_CLASS = {
     "CrossEntropyLoss": nn.CrossEntropyLoss,

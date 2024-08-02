@@ -66,7 +66,7 @@ class simXRDDataset(Dataset):
         return intensity_tensor, space_group_tensor, crysystem_tensor, blt_tensor, element_composition_tensor
 
 # Data loaders for training
-def create_data_loaders(train_path, val_path, test_path, batch_size=32, num_workers=3):
+def create_training_data_loaders(train_path, val_path, test_path, batch_size=32, num_workers=3):
     train_dataset = simXRDDataset(train_path)
     val_dataset = simXRDDataset(val_path)
     test_dataset = simXRDDataset(test_path)
@@ -78,7 +78,7 @@ def create_data_loaders(train_path, val_path, test_path, batch_size=32, num_work
     return train_loader, val_loader, test_loader
 
 # Data loader for inference
-def create_inference_loader(inference_path, batch_size=32, num_workers=3):
+def create_inference_data_loader(inference_path, batch_size=32, num_workers=3):
     inference_dataset = simXRDDataset(inference_path)
     inference_loader = DataLoader(inference_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     return inference_loader

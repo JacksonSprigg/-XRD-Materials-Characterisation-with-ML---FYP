@@ -7,7 +7,7 @@ import datetime
 import scripts.training.config_training as config_training
 
 # Functions
-from src.data_handling.simXRD_data_loader import create_data_loaders
+from src.data_loading.simXRD_data_loader import create_data_loaders
 from src.training.train_single_spg import train_single_spg
 from src.training.train_multi_spg_cryssystem_blt_element import train_multi_spg_cryssystem_blt_element
 
