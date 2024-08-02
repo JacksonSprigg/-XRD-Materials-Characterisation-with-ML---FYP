@@ -37,9 +37,9 @@ class Predictor(nn.Module):
         return self.MLP(x)
     
 
-class Model(nn.Module):
-    def __init__(self, args):
-        super(Model, self).__init__()
+class CNNeleven(nn.Module):
+    def __init__(self):
+        super(CNNeleven, self).__init__()
         self.cnn = NoPoolCNN()
         mlp_in_features = 12160
         self.MLP = Predictor(mlp_in_features, 230)

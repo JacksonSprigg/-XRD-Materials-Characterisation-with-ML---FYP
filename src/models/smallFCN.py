@@ -246,3 +246,4 @@ class smallFCN_SelfAttention_multi_task(nn.Module):
             'blt': blt_out,
             'composition': composition_out
         }
+    

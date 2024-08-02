@@ -4,16 +4,69 @@ import torch.nn as nn
 from einops import rearrange, repeat, pack, unpack
 from einops.layers.torch import Rearrange
 
-# TODO: This is gen AI code. I need to make sure it is implemented properly.
-# TODO: Get the code from a reputable source (Maybe: https://github.com/lucidrains/vit-pytorch)
-# TODO: I have adapted this (https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/vit_1d.py)
+# Code is adapted from: https://github.com/lucidrains/vit-pytorch
+# More specifically: https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/vit_1d.py
+# Accessed 2/8/24
+
+# The ViT paper can be found here: https://arxiv.org/pdf/2010.11929
+
+# Note: Patch size *MUST* be divisible by sequence length.
+
+# Modifications:
+# I have altererd the basic ViT final layers to be a basic multi-task model.
+
+# TODO: Make these a comparable param count to the FCN.
+
+class ViT1D(nn.Module):
+    def __init__(self, *, seq_len=3501, patch_size=20, dim=1024, depth=6, heads=8, mlp_dim=2048, channels=1, dim_head=64, dropout=0.2, emb_dropout=0.2):
+        super().__init__()
+
+        # Calculate number of patches based on the first 3500 elements (We exclude the last element here)
+        num_patches = (seq_len - 1) // patch_size
+        patch_dim = channels * patch_size
+
+        self.to_patch_embedding = nn.Sequential(
+            Rearrange('b c (n p) -> b n (p c)', p=patch_size),
+            nn.LayerNorm(patch_dim),
+            nn.Linear(patch_dim, dim),
+            nn.LayerNorm(dim),
+        )
+
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))
+        self.cls_token = nn.Parameter(torch.randn(dim))
+        self.dropout = nn.Dropout(emb_dropout)
+
+        self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim, dropout)
+
+        # Output head
+        self.spg_head = nn.Sequential(
+            nn.LayerNorm(dim),
+            nn.Linear(dim, 230)
+        )
+
+    def forward(self, series):
+        x = self.to_patch_embedding(series)
+        b, n, _ = x.shape
+
+        cls_tokens = repeat(self.cls_token, 'd -> b d', b=b)
+
+        x, ps = pack([cls_tokens, x], 'b * d')
+
+        x += self.pos_embedding[:, :(n + 1)]
+        x = self.dropout(x)
+
+        x = self.transformer(x)
+
+        cls_tokens, _ = unpack(x, ps, 'b * d')
+
+        return self.spg_head(cls_tokens)
 
 class ViT1D_multi_task(nn.Module):
-    def __init__(self, *, seq_len=3501, patch_size=9, dim=1024, depth=6, heads=8, mlp_dim=2048, channels=1, dim_head=64, dropout=0.2, emb_dropout=0.2):
+    def __init__(self, *, seq_len=3501, patch_size=20, dim=1024, depth=6, heads=8, mlp_dim=2048, channels=1, dim_head=64, dropout=0.2, emb_dropout=0.2):
         super().__init__()
-        assert (seq_len % patch_size) == 0
 
-        num_patches = seq_len // patch_size
+        # Calculate number of patches based on the first 3500 elements (We exclude the last element here)
+        num_patches = (seq_len - 1) // patch_size
         patch_dim = channels * patch_size
 
         self.to_patch_embedding = nn.Sequential(
@@ -69,6 +122,7 @@ class ViT1D_multi_task(nn.Module):
             'composition': self.composition_head(cls_tokens)
         }
     
+# Transformer classes:
 class FeedForward(nn.Module):
     def __init__(self, dim, hidden_dim, dropout = 0.):
         super().__init__()
@@ -131,3 +185,4 @@ class Transformer(nn.Module):
             x = attn(x) + x
             x = ff(x) + x
         return x
+    
