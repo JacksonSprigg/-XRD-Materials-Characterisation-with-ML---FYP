@@ -1,1 +1,1 @@
-Your trained models will appear here.
+Trained models may be shared at a later date.
