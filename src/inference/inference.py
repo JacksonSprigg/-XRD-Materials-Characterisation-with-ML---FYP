@@ -1,3 +1,4 @@
+import os
 import torch
 import pickle
 
@@ -5,9 +6,10 @@ import pickle
 import scripts.inference.config_inference as config_inference
 
 # Import functions
-from src.data_loading.simXRD_data_loader import create_inference_loader
+from src.data_loading.simXRD_data_loader import create_inference_data_loader
 
 # TODO: Add a function to save data dynamically.
+# TODO: Note that this only uses one GPU.
 
 def load_model(model_path):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -59,7 +61,7 @@ def main(model_path):
     model, device = load_model(model_path)
 
     # Create data loader for test data
-    test_loader = create_inference_loader(
+    test_loader = create_inference_data_loader(
         config_inference.INFERENCE_DATA, 
         config_inference.BATCH_SIZE, 
         config_inference.NUM_WORKERS

@@ -7,9 +7,10 @@ import datetime
 import scripts.training.config_training as config_training
 
 # Functions
-from src.data_loading.simXRD_data_loader import create_data_loaders
+from src.data_loading.simXRD_data_loader import create_training_data_loaders
 from src.training.train_single_spg import train_single_spg
 from src.training.train_multi_spg_cryssystem_blt_element import train_multi_spg_cryssystem_blt_element
+from src.utils.check_GPUs import check_gpus
 
 # TODO: Setup_device() function has not been tested with multiple GPUs. I am not currently sure how it will handle multiple GPUs
 
@@ -73,7 +74,7 @@ def main():
     wandb_run = setup_wandb()
 
     # Create data loaders
-    train_loader, val_loader, test_loader = create_data_loaders(
+    train_loader, val_loader, test_loader = create_training_data_loaders(
         config_training.TRAIN_DATA, config_training.VAL_DATA, config_training.TEST_DATA, 
         config_training.BATCH_SIZE, config_training.NUM_WORKERS
     )
@@ -111,4 +112,5 @@ def main():
     wandb_run.finish()
 
 if __name__ == "__main__":
+    check_gpus()
     main()

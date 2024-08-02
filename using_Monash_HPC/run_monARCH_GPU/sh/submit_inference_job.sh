@@ -15,5 +15,4 @@ module load cuda
 nvidia-smi
 deviceQuery
 
-srun python /monfs01/projects/ys68/XRD_ML/src/utils/check_GPUs.py
 srun python /monfs01/projects/ys68/XRD_ML/src/inference/inference.py
