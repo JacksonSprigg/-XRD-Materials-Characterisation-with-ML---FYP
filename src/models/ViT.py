@@ -11,6 +11,7 @@ from einops.layers.torch import Rearrange
 # The ViT paper can be found here: https://arxiv.org/pdf/2010.11929
 
 # Note: Patch size *MUST* be divisible by sequence length.
+# TODO: I think you are supposed to pre-train these models as per paper..
 
 # Modifications:
 # I have altererd the basic ViT final layers to be a basic multi-task model.
@@ -62,11 +63,11 @@ class ViT1D(nn.Module):
         return self.spg_head(cls_tokens)
 
 class ViT1D_multi_task(nn.Module):
-    def __init__(self, *, seq_len=3501, patch_size=20, dim=1024, depth=6, heads=8, mlp_dim=2048, channels=1, dim_head=64, dropout=0.2, emb_dropout=0.2):
+    def __init__(self, *, seq_len=3501, patch_size=20, dim=128, depth=6, heads=6, mlp_dim=1024, channels=1, dim_head=32, dropout=0.2, emb_dropout=0.2):
         super().__init__()
 
         # Calculate number of patches based on the first 3500 elements (We exclude the last element here)
-        num_patches = (seq_len - 1) // patch_size
+        num_patches = (seq_len-1) // patch_size
         patch_dim = channels * patch_size
 
         self.to_patch_embedding = nn.Sequential(
@@ -101,6 +102,10 @@ class ViT1D_multi_task(nn.Module):
         )
 
     def forward(self, series):
+
+        # Slice off the last element
+        series = series[:, :, :3500]
+
         x = self.to_patch_embedding(series)
         b, n, _ = x.shape
 

@@ -15,5 +15,8 @@ def print_model_parameters(model):
     print(f"Total trainable params: {total_params}")
 
 if __name__ == "__main__":
+    model = ViT1D_multi_task()
+    print_model_parameters(model)
+
     model = smallFCN_multi_task()
     print_model_parameters(model)

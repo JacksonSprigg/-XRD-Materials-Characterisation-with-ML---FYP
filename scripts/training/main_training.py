@@ -15,7 +15,7 @@ from src.utils.check_GPUs import check_gpus
 # TODO: Setup_device() function has not been tested with multiple GPUs. I am not currently sure how it will handle multiple GPUs
 
 def setup_wandb():
-    wandb.require("core") # This line maybe fixes a "retry upload" bug I was having. See: https://github.com/wandb/wandb/issues/4929
+    wandb.require("core") # This line *maybe* fixes a "retry upload" bug I was having. See: https://github.com/wandb/wandb/issues/4929
     return wandb.init(
         project=config_training.WANDB_PROJECT_NAME, 
         dir=config_training.WANDB_SAVE_DIR, 
