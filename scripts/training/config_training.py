@@ -41,7 +41,7 @@ MULTI_TASK_CRITERIA = {
 # Hyper Params
 LEARNING_RATE = 0.0001
 BATCH_SIZE = 32
-NUM_EPOCHS = 10
+NUM_EPOCHS = 20
 
 # Optimiser
 OPTIMIZER_TYPE = "Adam" # Options: "Adam", "SGD"
