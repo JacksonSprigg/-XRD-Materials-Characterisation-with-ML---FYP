@@ -3,3 +3,7 @@ The partial data can be found here:
 https://huggingface.co/datasets/caobin/SimXRDreview/tree/main
 
 Upload it into this folder.
+
+# Train XRD # = 5000
+# Test XRD #  = 2000
+# Val XRD #   = 1000
