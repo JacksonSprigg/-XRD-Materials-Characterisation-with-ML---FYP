@@ -6,8 +6,6 @@ import torch.nn.functional as F
 # Accessed 2/8/24
 # As described in simXRD paper.
 
-# TODO: Add multi-task
-
 class CNNeleven(nn.Module):
     def __init__(self):
         super(CNNeleven, self).__init__()
@@ -20,6 +18,36 @@ class CNNeleven(nn.Module):
         x = self.cnn(x)
         x = self.MLP(x)
         return x
+    
+class CNNeleven_MultiTask(nn.Module):
+    def __init__(self):
+        super(CNNeleven_MultiTask, self).__init__()
+        
+        self.cnn = NoPoolCNN()
+
+        mlp_in_features = 12160
+
+        self.MLP_spg_out = Predictor(mlp_in_features, 230)
+        self.MLP_crysystem_out = Predictor(mlp_in_features, 7)
+        self.MLP_blt_out = Predictor(mlp_in_features, 7)
+        self.MLP_composition_out = Predictor(mlp_in_features, 118)
+        
+    def forward(self, x):
+        x = F.interpolate(x,size=8500,mode='linear', align_corners=False)
+        x = self.cnn(x)
+
+        spg_out = self.MLP_spg_out(x)
+        crysystem_out = self.MLP_crysystem_out(x)
+        blt_out = self.MLP_blt_out(x)
+        composition_out = self.MLP_composition_out(x)
+
+        return {
+            'spg': spg_out,
+            'crysystem': crysystem_out,
+            'blt': blt_out,
+            'composition': composition_out
+        }
+    
 
 # Classes  
 class NoPoolCNN(nn.Module):

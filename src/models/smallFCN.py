@@ -61,9 +61,9 @@ class smallFCN(nn.Module):
         
         return spg_out
 
-class smallFCN_multi_task(nn.Module):
+class smallFCN_MultiTask(nn.Module):
     def __init__(self):
-        super(smallFCN_multi_task, self).__init__()
+        super(smallFCN_MultiTask, self).__init__()
         
         # Convolutional layers
         self.conv1 = nn.Conv1d(1, 16, kernel_size=6, padding=2)
@@ -136,7 +136,7 @@ class smallFCN_multi_task(nn.Module):
             'composition': composition_out
         }
     
-class smallFCN_SelfAttention_multi_task(nn.Module):
+class smallFCN_SelfAttention_MultiTask(nn.Module):
     def __init__(self, embed_dim=256, num_heads=8):
         super().__init__()
 

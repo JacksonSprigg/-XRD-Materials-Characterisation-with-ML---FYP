@@ -4,12 +4,13 @@ import torch.nn as nn
 import torch.optim as optim
 
 # Import models
-from src.models.CNNten import CNNten, CNNten_multi_task
-from src.models.smallFCN import smallFCN, smallFCN_multi_task, smallFCN_SelfAttention_multi_task, experimentalFCN
-from src.models.ViT import ViT1D_multi_task
+from src.models.CNNten import CNNten, CNNten_MultiTask, smallCNNten_MultiTask
+from src.models.CNNeleven import CNNeleven, CNNeleven_MultiTask
+from src.models.smallFCN import smallFCN, smallFCN_MultiTask, smallFCN_SelfAttention_MultiTask, experimentalFCN
+from src.models.ViT import ViT1D_MultiTask
 from src.models.MLPten import MLPten
 
-# TODO: Add a wandb option
+# TODO: Is model class necessary?
 
 # Paths
 DATA_DIR = 'training_data/simXRD_partial_data'
@@ -24,7 +25,7 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "experimentalFCN"                     # Options: Any of the imported models. It should be a string. e.g. "smallFCN"
+MODEL_TYPE = "CNNeleven_MultiTask"                 # Options: Any of the imported models. It should be a string. e.g. "smallFCN"
 MULTI_TASK = True                                  # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
 
 # IF SINGLE TASK, loss
@@ -60,13 +61,15 @@ WANDB_LOG_ARCHITECTURE = False
 ############# DON'T TOUCH - CThese classes contain the options for above ##################
 MODEL_CLASS = {
     "CNNten": CNNten,
-    "CNNten_multi_task": CNNten_multi_task,
+    "CNNten_MultiTask": CNNten_MultiTask,
+    "CNNeleven_MultiTask": CNNeleven_MultiTask,
+    "smallCNNten_MultiTask": smallCNNten_MultiTask,
     "smallFCN": smallFCN,
-    "smallFCN_multi_task": smallFCN_multi_task,
-    "smallFCN_SelfAttention_multi_task": smallFCN_SelfAttention_multi_task,
+    "smallFCN_MultiTask": smallFCN_MultiTask,
+    "smallFCN_SelfAttention_MultiTask": smallFCN_SelfAttention_MultiTask,
     "experimentalFCN": experimentalFCN,
     "MLPten": MLPten,
-    "ViT1D_multi_task": ViT1D_multi_task
+    "ViT1D_MultiTask": ViT1D_MultiTask
 }
 CRITERION_CLASS = {
     "CrossEntropyLoss": nn.CrossEntropyLoss,

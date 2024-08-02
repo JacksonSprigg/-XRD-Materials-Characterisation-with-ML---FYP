@@ -12,7 +12,7 @@ from src.training.train_single_spg import train_single_spg
 from src.training.train_multi_spg_cryssystem_blt_element import train_multi_spg_cryssystem_blt_element
 from src.utils.check_GPUs import check_gpus
 
-# TODO: Setup_device() function has not been tested with multiple GPUs. I am not currently sure how it will handle multiple GPUs
+# TODO: Setup_device() function has not been tested with multiple GPUs. I am not currently sure how it will handle multiple GPUs. These needs to be done before large training runs.
 
 def setup_wandb():
     wandb.require("core") # This line *maybe* fixes a "retry upload" bug I was having. See: https://github.com/wandb/wandb/issues/4929

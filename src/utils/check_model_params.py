@@ -1,5 +1,5 @@
 # Import models
-from src.models.CNNten import CNNten, CNNten_multi_task
+from src.models.CNNten import CNNten, CNNten_multi_task, smallCNNten_multi_task
 from src.models.MLPten import MLPten
 from src.models.CNNeleven import CNNeleven
 from src.models.smallFCN import smallFCN, smallFCN_multi_task, smallFCN_SelfAttention_multi_task, experimentalFCN
@@ -15,7 +15,7 @@ def print_model_parameters(model):
     print(f"Total trainable params: {total_params}")
 
 if __name__ == "__main__":
-    model = experimentalFCN()
+    model = smallCNNten_multi_task()
     print_model_parameters(model)
 
     #model = smallFCN_multi_task()
