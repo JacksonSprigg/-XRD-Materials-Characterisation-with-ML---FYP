@@ -5,6 +5,9 @@ from heapq import heappush, heappushpop
 
 ### Let's look at the simXRD data ###
 
+# TODO: Make note of data analysis
+# TODO: What are the simulation params?
+
 # All config params can be found in the __main__ code at the bottom.
 # You can see example visualisations in the ex_plots folder
 
@@ -63,7 +66,9 @@ def plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, b
     return
 
 # Have a look at the data
-def looking_at_data(db_path, max_iterations, plot=False):
+def looking_at_data(data_path, max_iterations, plot=False):
+    databs = connect(data_path)
+
     count = 0
     
     spg_values = []
@@ -121,7 +126,7 @@ def looking_at_data(db_path, max_iterations, plot=False):
         elif composition_length > largest_compositions[0][0]:
             heappushpop(largest_compositions, (composition_length, chem_form))
 
-        # Print detailed information for the first few samples (unchanged)
+        # Print detailed information for the first few samples
         if count < 2:
             print(f"\nSample {count + 1}:")
             print(f"SPG: {spg}, Crystal System: {crysystem}, Bravais Lattice Type: {bravislatt_type}")
@@ -165,6 +170,7 @@ def looking_at_data(db_path, max_iterations, plot=False):
     print(f"Max elements: {max(composition_lengths)}")
     print(f"Total unique elements: {len(element_counts)}")
     print("Most common elements:")
+    
     for elem, count in sorted(element_counts.items(), key=lambda x: x[1], reverse=True)[:118]:
         print(f"  {elem}: {count}")
 
@@ -194,6 +200,7 @@ def analyze_space_groups(databs, max_iterations):
     crystal_systems = []
     bravais_lattice_types = []
     count = 0
+
     for row in databs.select():
         spg = eval(getattr(row, 'tager'))[0]
         crysystem = eval(getattr(row, 'tager'))[1]
@@ -201,6 +208,7 @@ def analyze_space_groups(databs, max_iterations):
         space_groups.append(spg)
         crystal_systems.append(crysystem)
         bravais_lattice_types.append(bravislatt_type)
+
         count += 1
         if count == max_iterations:
             break
@@ -229,19 +237,23 @@ def analyze_space_groups(databs, max_iterations):
 
 
 if __name__ == "__main__":
-    train_data_path = "simXRD_partial_data/train.db"  # Train size = 5000
-    test_data_path = "simXRD_partial_data/test.db"    # Test size  = 2000
-    val_data_path = "simXRD_partial_data/val.db"      # Val size   = 1000
-    test_full_data_path = "training_data/simXRD_full_data/test.db" 
-    databs = connect(test_full_data_path)
-    image_save_path = "/home/jsprigg/scratch/"
-    #image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
 
-    # Prints the data, you can also plot it by changing the plot variable
-    # The plot is in a loop so be careful.
-    limit = 10         # The amount of XRD rows you want to go through
-    plot = False
-    looking_at_data(databs, limit, plot)
+    # Path options
+    train_data_path = "training_data/simXRD_partial_data/train.db"  # Size = 5000
+    test_data_path = "training_data/simXRD_partial_data/test.db"    # Size = 2000
+    val_data_path = "training_data/simXRD_partial_data/val.db"      # Size = 1000
+    test_full_data_path = "training_data/simXRD_full_data/test.db"  # Size = 120,000
+
+    # Change this
+    data_path = val_data_path 
+
+    # Use matplot to plot some examples. I have already plotted some example data points in: ex_plots
+    plot = False       
+    image_save_path = ""
+
+    # This loops through your data and can also plot some data points if d
+    limit = 50
+    looking_at_data(data_path, limit, plot)
 
     # This function shows the frequency of each group in the dataset. I have printed the data below so that you don't have to run it.
     #analyze_space_groups(databs, limit)

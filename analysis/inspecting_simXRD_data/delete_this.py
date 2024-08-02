@@ -2,11 +2,6 @@ from ase.db import connect
 from tqdm import tqdm
 import random
 
-# Connect to the database
-test_full_data_path = "ML_For_XRD_Materials_Characterisation/training_data/simXRD_full_data/test.db"
-test_partial_data_path = "ML_For_XRD_Materials_Characterisation/training_data/simXRD_partial_data/test.db"
-databs = connect(test_partial_data_path)
-
 def safe_print_db_info(db, sample_size=10):
     total_entries = len(db)
     print(f"Total number of entries: {total_entries}")
@@ -34,4 +29,11 @@ def safe_print_db_info(db, sample_size=10):
         print(f"  {key}")
 
 if __name__ == "__main__":
+    
+    # Connect to the database
+    test_full_data_path = "training_data/simXRD_full_data/test.db"
+    test_partial_data_path = "training_data/simXRD_partial_data/test.db"
+
+    databs = connect(test_partial_data_path)
+
     safe_print_db_info(databs)
