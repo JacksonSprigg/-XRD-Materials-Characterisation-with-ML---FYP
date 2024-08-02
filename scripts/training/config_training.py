@@ -1,13 +1,5 @@
 import os
 
-######################### READ: idiosyncratic path error #########################################
-# TODO: FIX THIS PATH ERROR
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-# This sets the current path to the parent of the parent directory. I was getting annoyed at being cd into the wrong places.
-# You shouldn't need this and can comment out this block.
-##################################################################################################
-
 import torch.nn as nn
 import torch.optim as optim
 
@@ -18,8 +10,8 @@ from src.models.MLPten import MLPten
 from src.models.Jackson import Jackson
 
 # Paths
-DATA_DIR = 'ML_For_XRD_Materials_Characterisation/training_data/simXRD_partial_data'
-MODEL_SAVE_DIR = 'ML_For_XRD_Materials_Characterisation/trained_models'
+DATA_DIR = '/monfs01/projects/ys68/XRD_ML/training_data/simXRD_partial_data'
+MODEL_SAVE_DIR = '/monfs01/projects/ys68/XRD_ML/trained_models'
 
 # Data
 TRAIN_DATA = os.path.join(DATA_DIR, 'train.db')
@@ -47,7 +39,7 @@ MULTI_TASK_CRITERIA = {
 # Hyper Params
 LEARNING_RATE = 0.0001
 BATCH_SIZE = 32
-NUM_EPOCHS = 100
+NUM_EPOCHS = 150
 
 # Optimiser
 OPTIMIZER_TYPE = "Adam" # Options: "Adam", "SGD"

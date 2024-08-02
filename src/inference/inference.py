@@ -1,12 +1,3 @@
-######################### READ: idiosyncratic path error #########################################
-# TODO: FIX THIS PATH ERROR
-import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-# This sets the current path to the parent directory of this file. I was getting annoyed at being cd into the wrong places.
-# You shouldn't need this and can comment out this block.
-##################################################################################################
-
 import torch
 import pickle
 
@@ -14,9 +5,9 @@ import pickle
 import scripts.inference.config_inference as config_inference
 
 # Import functions
-from src.data_handling.simXRD_data_loader import create_inference_loader
+from src.data_loading.simXRD_data_loader import create_inference_loader
 
-# TODO: Add a function to save data.
+# TODO: Add a function to save data dynamically.
 
 def load_model(model_path):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -92,7 +83,6 @@ def main(model_path):
 
     return
     
-
 if __name__ == "__main__":
     model_path = f'{config_inference.MODEL_SAVE_DIR}/{config_inference.MODEL_NAME}'
     main(model_path)

@@ -16,7 +16,6 @@ def train_single_spg(model, train_loader, val_loader, test_loader, criterion, op
             data, space_group = batch[0], batch[1]
             
             # Reshape data: [batch_size, 3501] -> [batch_size, 1, 3501]
-            # Move to device
             data = data.unsqueeze(1).to(device)
             target = space_group.to(device)
             

@@ -3,60 +3,25 @@ from ase.db import connect
 from collections import Counter
 from heapq import heappush, heappushpop
 
-# TODO: Deprecate this code
-# TODO: Deprecate this code
-# TODO: This code is a mess.
-# TODO: Deprecate this code
-# TODO: Deprecate this code
-
-
 ### Let's look at the simXRD data ###
 
-# I save plots to /scratch. Don't accidentally overload this storage.
-#  **READ MONARCH DOCUMENTATION TO MAKE SURE YOU DON'T CRASH THE MACHINE**
+# All config params can be found in the __main__ code at the bottom.
+# You can see example visualisations in the ex_plots folder
 
-# ase.db stores a lot of different atomic data
+# DON'T accidentally save a large number of plots and overload your storage.
+
+# ase.db stores a lot of different atomic data, but they have cleaned most of it out with their format.
 # See https://wiki.fysik.dtu.dk/ase/ase/db/db.html#description-of-a-row
-# I checked the files and will list ALL the USEFUL keys we have access to below.
 
-################## Here is the data that we have access to ###########################
-# _keys: Shows some keys
-# key_value_pairs: Shows key value pairs
-# get: Method that does?
-# count_atoms: Method that does?
-# toatoms: Method that does?
-
-# I think these are the same?
-# chem_form: ex. La2Pd2
-# formula: ex. La2Pd2
-
+################## Here are the *useful* key-data pairs that we have access to ###########################
+# chem_form: ex. "La2Pd2"
+# symbols: A list, e.g., ['H', 'H', 'H', 'H', 'C', 'C', 'O', 'O', 'O', 'O', 'O', 'O']
 # intensity: XRD intensities, normalised to 100 | 3501 x 1 vector
 # latt_dis: Lattice distances | 3501 x 1 vector
+# tager: [Space Group, Crystal System, Bravis Lattice type]
 # mass: Atomic mass
-# natoms: Number of atoms | int
-# numbers: Atomic numbers | int | (N,)
-# pbc: Periodic boundary condition flags | bool | (3,) - I think these are all just false and there isn't actually any information here
-# simulation_param: Yes - I don't know what this actually means
-# symbols: A list, e.g., ['H', 'H', 'H', 'H', 'C', 'C', 'O', 'O', 'O', 'O', 'O', 'O']
-# tager: [Space Group, Crystal System, ??something else??] - I think the something else is bravis lattice types?
-
-# Note the crystal system meaning:
-# TODO: Not sure I have this order right.
-#  1 : Cubic
-#  2 : Hexagonal
-#  3 : Tetragonal
-#  4 : Orthorhombic
-#  5 : Trigonal
-#  6 : Monoclinic
-#  7 : Triclinic
+# simulation_param: TODO: **I don't know what this actually means**
 #####################################################################################
-
-## Note that you may need to change this path depending on permissions ##
-train_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/train.db"  # Train size = 5000
-test_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/test.db"    # Test size  = 2000
-val_data_path = "/monfs01/projects/ys68/XRD_ML/simXRD_partial_data/val.db"      # Val size   = 1000
-test_full_data_path = "ML_For_XRD_Materials_Characterisation/training_data/simXRD_full_data/test.db" 
-databs = connect(test_full_data_path)
 
 # Creating an XRD plot
 def plot_xrd_data(latt_dis, intensity, chem_form, atomic_mass, spg, crysystem, bravislatt_type, image_save_path):
@@ -264,6 +229,11 @@ def analyze_space_groups(databs, max_iterations):
 
 
 if __name__ == "__main__":
+    train_data_path = "simXRD_partial_data/train.db"  # Train size = 5000
+    test_data_path = "simXRD_partial_data/test.db"    # Test size  = 2000
+    val_data_path = "simXRD_partial_data/val.db"      # Val size   = 1000
+    test_full_data_path = "training_data/simXRD_full_data/test.db" 
+    databs = connect(test_full_data_path)
     image_save_path = "/home/jsprigg/scratch/"
     #image_save_path = "/home/jsprigg/ys68/XRD_ML/data_manipulation/example_XRD_plots/"
 

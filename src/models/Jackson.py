@@ -1,6 +1,8 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
+# TODO: Delete this once you understand why it doesn't work.
+
 # I make a somewhat random model
 # It over fits
 

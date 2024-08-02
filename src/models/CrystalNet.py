@@ -6,12 +6,12 @@ import numpy as np
 # From paper: https://arxiv.org/pdf/2312.15136v1
 # As found here: https://github.com/gabeguo/deep-crystallography-public/blob/main/multiXRD_withFormula/models/crystal_mlp.py
 # Date accessed: 27/07/2024
-# Messy github : /
+# Messy github :/
 
+# Modifcications made:
 # I have slightly altered the structure to work on the simXRD dataset
 # simXRD: https://arxiv.org/pdf/2406.15469
 
-# Modifcications made:
 
 class FormulaEmbedder(nn.Module):
     def __init__(self, num_blocks = 4):

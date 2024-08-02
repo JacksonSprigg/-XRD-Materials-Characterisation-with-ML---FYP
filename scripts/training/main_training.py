@@ -3,15 +3,6 @@ import torch.nn as nn
 import wandb
 import datetime
 
-######################### READ: idiosyncratic path error #########################################
-# TODO: FIX THIS PATH ERROR
-import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-# This sets the current path to the parent directory. I was getting annoyed at being cd into the wrong places.
-# You shouldn't need this and can comment out this block.
-##################################################################################################
-
 # Config
 import scripts.training.config_training as config_training
 
@@ -23,7 +14,7 @@ from src.training.train_multi_spg_cryssystem_blt_element import train_multi_spg_
 # TODO: Setup_device() function has not been tested with multiple GPUs. I am not currently sure how it will handle multiple GPUs
 
 def setup_wandb():
-    wandb.require("core") # This line maybe fixes a retry upload bug I was having. See: https://github.com/wandb/wandb/issues/4929
+    wandb.require("core") # This line maybe fixes a "retry upload" bug I was having. See: https://github.com/wandb/wandb/issues/4929
     return wandb.init(
         project=config_training.WANDB_PROJECT_NAME, 
         dir=config_training.WANDB_SAVE_DIR, 

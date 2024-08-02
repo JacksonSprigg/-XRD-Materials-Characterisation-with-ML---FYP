@@ -16,4 +16,4 @@ nvidia-smi
 deviceQuery
 
 srun python /monfs01/projects/ys68/XRD_ML/src/utils/check_GPUs.py
-srun python /monfs01/projects/ys68/XRD_ML/scripts/main.py
+srun python /monfs01/projects/ys68/XRD_ML/scripts/training/main_training.py

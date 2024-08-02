@@ -12,6 +12,7 @@ import math
 # I augment a second module to allow for multi-task outputs.
 
 # TODO: Check it is implememnted correctly..
+# TODO: Implement the self attention model correctly
 
 class smallFCN(nn.Module):
     def __init__(self):

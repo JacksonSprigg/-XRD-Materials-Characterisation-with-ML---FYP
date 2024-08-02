@@ -1,28 +1,19 @@
 import os
 
-######################### READ: idiosyncratic path error #########################################
-# TODO: FIX THIS PATH ERROR
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-# This sets the current path to the parent directory. I was getting annoyed at being cd into the wrong places.
-# You shouldn't need this and can comment out this block.
-##################################################################################################
-
-# TODO: MAKE "infer.py"
-# TODO: MAKE this config easier to navigate
-
 # Import models
 from src.models.CNNten import CNNten, CNNten_multi_task
 from src.models.smallFCN import smallFCN, smallFCN_multi_task
 from src.models.MLPten import MLPten
 from src.models.Jackson import Jackson
 
+# TODO: MAKE "infer.py"
+# TODO: MAKE this config easier to navigate
+# TODO: MAKE SAVE NAME ALTERABLE
+
 # Paths
 DATA_DIR = 'ML_For_XRD_Materials_Characterisation/training_data/simXRD_full_data'
 MODEL_SAVE_DIR = 'ML_For_XRD_Materials_Characterisation/trained_models'
 INFERENCE_SAVE_DIR = 'ML_For_XRD_Materials_Characterisation/inference_data'
-
-# TODO: MAKE SAVE NAME ALTERABLE
 
 # Data
 INFERENCE_DATA = os.path.join(DATA_DIR, 'test.db')
