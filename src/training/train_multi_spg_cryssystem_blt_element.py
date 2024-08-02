@@ -3,6 +3,9 @@ import wandb
 from tqdm import tqdm
 from sklearn.metrics import f1_score
 
+# Config
+import scripts.training.config_training as config_training
+
 # TODO: Adaptive learning rates
 # TODO: Is normalised loss the best method here?
 # TODO: Document momentum and add it as an input + figure out if running losses is the right call
@@ -51,9 +54,10 @@ def train_multi_spg_cryssystem_blt_element(model, train_loader, val_loader, test
         val_metrics = evaluate_multi_task(model, val_loader, criteria, device)
         
         # Log metrics to wandb every epoch
-        wandb_log = {f"train_{task}_loss": loss for task, loss in train_losses.items()}
-        wandb_log.update({f"val_{k}": v for k, v in val_metrics.items()})
-        wandb.log(wandb_log)
+        if config_training.USE_WANDB:
+            wandb_log = {f"train_{task}_loss": loss for task, loss in train_losses.items()}
+            wandb_log.update({f"val_{k}": v for k, v in val_metrics.items()})
+            wandb.log(wandb_log)
         
         print(f'Epoch {epoch+1}:')
         for task, loss in train_losses.items():
@@ -67,7 +71,9 @@ def train_multi_spg_cryssystem_blt_element(model, train_loader, val_loader, test
     print('Test Results:')
     for k, v in test_metrics.items():
         print(f'Test {k}: {v:.4f}')
-    wandb.log({f"test_{k}": v for k, v in test_metrics.items()})
+
+    if config_training.USE_WANDB:
+        wandb.log({f"test_{k}": v for k, v in test_metrics.items()})
 
     return model, test_metrics
 

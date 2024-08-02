@@ -71,7 +71,8 @@ def save_model(model, final_metrics, multi_task=False):
 
 def main():
     # Start WandB
-    wandb_run = setup_wandb()
+    if config_training.USE_WANDB:
+        wandb_run = setup_wandb()
 
     # Create data loaders
     train_loader, val_loader, test_loader = create_training_data_loaders(
@@ -109,7 +110,9 @@ def main():
         wandb.save(save_path)
 
     print(f"Training completed. Model saved as '{model_name}'.")
-    wandb_run.finish()
+
+    if config_training.USE_WANDB:
+        wandb_run.finish()
 
 if __name__ == "__main__":
     check_gpus()

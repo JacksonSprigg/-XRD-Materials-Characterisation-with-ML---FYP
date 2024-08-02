@@ -50,7 +50,7 @@ OPTIMIZER_TYPE = "Adam" # Options: "Adam", "SGD"
 NUM_WORKERS = 6
 
 # WandB configuration (Note that there is already a basic WandB log in train.py)
-# TODO: USE_WANDB = True (Need to put this in main and training)
+USE_WANDB = True        # Set to False if you don't want to use WandB at all.
 WANDB_PROJECT_NAME = "FirstModelExperiments"
 WANDB_SAVE_DIR = "/wandb"
 SAVE_MODEL_TO_WANDB_SERVERS = False

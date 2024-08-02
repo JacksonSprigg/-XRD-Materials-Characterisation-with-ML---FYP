@@ -2,6 +2,9 @@ import torch
 import wandb
 from tqdm import tqdm
 
+# Config
+import scripts.training.config_training as config_training
+
 # TODO: Maybe add in function hyper param tuning?
 # TODO: Save best model.
 # TODO: Residual XRD analysis
@@ -32,11 +35,12 @@ def train_single_spg(model, train_loader, val_loader, test_loader, criterion, op
         val_loss, val_accuracy = evaluate(model, val_loader, criterion, device)
         
         # Log metrics to wandb every epoch
-        wandb.log({
-            "train_spg_loss": train_loss,
-            "val_spg_loss": val_loss,
-            "val_spg_accuracy": val_accuracy
-        })
+        if config_training.USE_WANDB:
+            wandb.log({
+                "train_spg_loss": train_loss,
+                "val_spg_loss": val_loss,
+                "val_spg_accuracy": val_accuracy
+            })
         
         print(f'Epoch {epoch+1}: Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}, Val Accuracy: {val_accuracy:.2f}%')
 
@@ -44,10 +48,12 @@ def train_single_spg(model, train_loader, val_loader, test_loader, criterion, op
     test_loss, test_accuracy = evaluate(model, test_loader, criterion, device)
     
     print(f'Test loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.2f}%')
-    wandb.log({
-        "test_spg_loss": test_loss,
-        "test_spg_accuracy": test_accuracy
-    })
+
+    if config_training.USE_WANDB:
+        wandb.log({
+            "test_spg_loss": test_loss,
+            "test_spg_accuracy": test_accuracy
+        })
 
     return model, test_loss, test_accuracy
 
