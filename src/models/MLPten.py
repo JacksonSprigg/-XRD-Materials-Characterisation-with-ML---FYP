@@ -3,6 +3,8 @@ import torch.nn.functional as F
 
 # A basic MLP comparable to CNNten for comparison purposes.
 
+# TODO: Count parameters and test it.
+
 class MLPten(nn.Module):
     def __init__(self):
         super(MLPten, self).__init__()

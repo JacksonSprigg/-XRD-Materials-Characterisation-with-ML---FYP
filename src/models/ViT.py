@@ -12,6 +12,7 @@ from einops.layers.torch import Rearrange
 
 # Note: Patch size *MUST* be divisible by sequence length.
 # TODO: I think you are supposed to pre-train these models as per paper..
+# TODO: Read here: https://huggingface.co/docs/transformers/v4.27.0/model_doc/vit
 
 # Modifications:
 # I have altererd the basic ViT final layers to be a basic multi-task model.
@@ -90,7 +91,7 @@ class ViT1D_multi_task(nn.Module):
         )
         self.blt_head = nn.Sequential(
             nn.LayerNorm(dim),
-            nn.Linear(dim, 6)
+            nn.Linear(dim, 7)
         )
         self.spg_head = nn.Sequential(
             nn.LayerNorm(dim),

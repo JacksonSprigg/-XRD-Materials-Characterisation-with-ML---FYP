@@ -3,9 +3,25 @@ import torch.nn.functional as F
 
 # Model from:
 # https://github.com/compasszzn/XRDBench/blob/main/model/CNN11.py
+# Accessed 2/8/24
+# As described in simXRD paper.
 
 # TODO: Add multi-task
 
+class CNNeleven(nn.Module):
+    def __init__(self):
+        super(CNNeleven, self).__init__()
+        self.cnn = NoPoolCNN()
+        mlp_in_features = 12160
+        self.MLP = Predictor(mlp_in_features, 230)
+        
+    def forward(self, x):
+        x = F.interpolate(x,size=8500,mode='linear', align_corners=False)
+        x = self.cnn(x)
+        x = self.MLP(x)
+        return x
+
+# Classes  
 class NoPoolCNN(nn.Module):
     def __init__(self):
         super(NoPoolCNN, self).__init__()
@@ -35,17 +51,3 @@ class Predictor(nn.Module):
 
     def forward(self, x):
         return self.MLP(x)
-    
-
-class CNNeleven(nn.Module):
-    def __init__(self):
-        super(CNNeleven, self).__init__()
-        self.cnn = NoPoolCNN()
-        mlp_in_features = 12160
-        self.MLP = Predictor(mlp_in_features, 230)
-        
-    def forward(self, x):
-        x = F.interpolate(x,size=8500,mode='linear', align_corners=False)
-        x = self.cnn(x)
-        x = self.MLP(x)
-        return x

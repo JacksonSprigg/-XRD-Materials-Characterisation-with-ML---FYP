@@ -5,7 +5,7 @@ import torch.optim as optim
 
 # Import models
 from src.models.CNNten import CNNten, CNNten_multi_task
-from src.models.smallFCN import smallFCN, smallFCN_multi_task, smallFCN_SelfAttention_multi_task
+from src.models.smallFCN import smallFCN, smallFCN_multi_task, smallFCN_SelfAttention_multi_task, experimentalFCN
 from src.models.ViT import ViT1D_multi_task
 from src.models.MLPten import MLPten
 
@@ -24,7 +24,7 @@ TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 NAME_OF_DATA_USED = "simXRD_partial_data"
 
 # Model Setup
-MODEL_TYPE = "ViT1D_multi_task"                    # Options: "CNNten", CNNten_multi_task", "smallFCN", "smallFCN_multi_task", "smallFCN_SelfAttention_multi_task", "ViT1D_multi_task"
+MODEL_TYPE = "experimentalFCN"                     # Options: Any of the imported models. It should be a string. e.g. "smallFCN"
 MULTI_TASK = True                                  # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
 
 # IF SINGLE TASK, loss
@@ -39,7 +39,7 @@ MULTI_TASK_CRITERIA = {
 }
 
 # Hyper Params
-LEARNING_RATE = 0.0005
+LEARNING_RATE = 0.001
 BATCH_SIZE = 32
 NUM_EPOCHS = 20
 
@@ -50,7 +50,7 @@ OPTIMIZER_TYPE = "Adam" # Options: "Adam", "SGD"
 NUM_WORKERS = 6
 
 # WandB configuration (Note that there is already a basic WandB log in train.py)
-# TODO: USE_WANDB = True
+# TODO: USE_WANDB = True (Need to put this in main and training)
 WANDB_PROJECT_NAME = "FirstModelExperiments"
 WANDB_SAVE_DIR = "/wandb"
 SAVE_MODEL_TO_WANDB_SERVERS = False
@@ -64,6 +64,7 @@ MODEL_CLASS = {
     "smallFCN": smallFCN,
     "smallFCN_multi_task": smallFCN_multi_task,
     "smallFCN_SelfAttention_multi_task": smallFCN_SelfAttention_multi_task,
+    "experimentalFCN": experimentalFCN,
     "MLPten": MLPten,
     "ViT1D_multi_task": ViT1D_multi_task
 }

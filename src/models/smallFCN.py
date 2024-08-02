@@ -177,7 +177,7 @@ class smallFCN_SelfAttention_multi_task(nn.Module):
         self.crysystem_conv_2 = nn.Conv1d(64, 7, kernel_size=1)
 
         self.blt_conv_1 = nn.Conv1d(embed_dim, 64, kernel_size=6, padding=2)
-        self.blt_conv_2 = nn.Conv1d(64, 6, kernel_size=1)
+        self.blt_conv_2 = nn.Conv1d(64, 7, kernel_size=1)
 
         self.spg_conv_1 = nn.Conv1d(embed_dim, 256, kernel_size=6, padding=2)
         self.spg_conv_2 = nn.Conv1d(256, 230, kernel_size=1)
@@ -247,3 +247,51 @@ class smallFCN_SelfAttention_multi_task(nn.Module):
             'composition': composition_out
         }
     
+class experimentalFCN(nn.Module):
+    def __init__(self):
+        super(experimentalFCN, self).__init__()
+        
+        # Convolutional layers
+        self.conv1 = nn.Conv1d(1, 64, kernel_size=7, stride=2, padding=3)
+        self.conv2 = nn.Conv1d(64, 128, kernel_size=5, stride=2, padding=2)
+        self.conv3 = nn.Conv1d(128, 256, kernel_size=3, stride=2, padding=1)
+        self.conv4 = nn.Conv1d(256, 512, kernel_size=3, stride=2, padding=1)
+        
+        # Batch normalization layers
+        self.bn1 = nn.BatchNorm1d(64)
+        self.bn2 = nn.BatchNorm1d(128)
+        self.bn3 = nn.BatchNorm1d(256)
+        self.bn4 = nn.BatchNorm1d(512)
+        
+        # Global average pooling
+        self.gap = nn.AdaptiveAvgPool1d(1)
+        
+        # Fully connected layers for each task
+        self.blt_out = nn.Linear(512, 7)
+        self.crysystem_out = nn.Linear(512, 7)
+        self.spg_out = nn.Linear(512, 230)
+        self.composition_out = nn.Linear(512, 118)
+        
+    def forward(self, x):
+
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = F.relu(self.bn3(self.conv3(x)))
+        x = F.relu(self.bn4(self.conv4(x)))
+        
+        # Global average pooling
+        x = self.gap(x)
+        x = x.view(x.size(0), -1)
+        
+        # Multi-task outputs
+        spg_out = self.spg_out(x)
+        crysystem_out = self.crysystem_out(x)
+        blt_out = self.blt_out(x)
+        composition_out = self.composition_out(x)
+        
+        return {
+            'spg': spg_out,
+            'crysystem': crysystem_out,
+            'blt': blt_out,
+            'composition': composition_out
+        }

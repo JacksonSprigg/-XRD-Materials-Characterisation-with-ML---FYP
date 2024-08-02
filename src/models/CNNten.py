@@ -3,9 +3,11 @@ import torch.nn.functional as F
 
 # Model from:
 # https://github.com/compasszzn/XRDBench/blob/main/model/CNN10.py
+# Accessed 2/8/24
+# As described in simXRD paper.
 
 # Mofidications:
-# 
+# A basic augmentation to make CNNten a multi-task learner
 
 # Note, adding softmax in the final layer made the model perform substantially worse.
 
@@ -44,9 +46,6 @@ class CNNten(nn.Module):
         
         return x
 
-
-# A basic augmentation to make CNNten a multi-task learner
-
 class CNNten_multi_task(nn.Module):
     def __init__(self):
         super(CNNten_multi_task, self).__init__()
@@ -66,7 +65,7 @@ class CNNten_multi_task(nn.Module):
         # Task-specific layers
         self.fcl_spg = nn.Linear(2000, 230)          # Space group classification
         self.fcl_crysystem = nn.Linear(2000, 7)      # Crystal system classification
-        self.fcl_blt = nn.Linear(2000, 6)            # Bravais lattice type classification
+        self.fcl_blt = nn.Linear(2000, 7)            # Bravais lattice type classification
         self.fcl_composition = nn.Linear(2000, 118)  # Composition prediction
 
         self.flatten = nn.Flatten()

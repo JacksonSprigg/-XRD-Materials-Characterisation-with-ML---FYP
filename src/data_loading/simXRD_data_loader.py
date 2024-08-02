@@ -41,7 +41,7 @@ class simXRDDataset(Dataset):
         bravis_latt_type = eval(getattr(row, 'tager'))[2]
         element = getattr(row, 'symbols')
 
-        # This is so that it goes from 0-6 ,instead of 1-7
+        # This is so that we get a 0-6 output,instead of 1-7, etc. 
         # TODO: YOU WILL NEED TO ADD THE ONE BACK IN WHEN USING FOR INFERENCE ####
         crysystem -= 1
         space_group -= 1
