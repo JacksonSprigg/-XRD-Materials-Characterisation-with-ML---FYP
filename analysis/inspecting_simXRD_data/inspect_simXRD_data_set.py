@@ -170,7 +170,7 @@ def looking_at_data(data_path, max_iterations, plot=False):
     print(f"Max elements: {max(composition_lengths)}")
     print(f"Total unique elements: {len(element_counts)}")
     print("Most common elements:")
-    
+
     for elem, count in sorted(element_counts.items(), key=lambda x: x[1], reverse=True)[:118]:
         print(f"  {elem}: {count}")
 
@@ -195,7 +195,9 @@ def looking_at_data(data_path, max_iterations, plot=False):
     return
 
 # Look at the frequency of each space group
-def analyze_space_groups(databs, max_iterations):
+def analyze_space_groups(data_path, max_iterations):
+    databs = connect(data_path)
+
     space_groups = []
     crystal_systems = []
     bravais_lattice_types = []
@@ -233,9 +235,6 @@ def analyze_space_groups(databs, max_iterations):
     # Calculate and print frequencies for Bravais Lattice Types
     calculate_and_print_frequencies(bravais_lattice_types, "Bravais Lattice Type")
 
-
-
-
 if __name__ == "__main__":
 
     # Path options
@@ -245,20 +244,20 @@ if __name__ == "__main__":
     test_full_data_path = "training_data/simXRD_full_data/test.db"  # Size = 120,000
 
     # Change this
-    data_path = val_data_path 
+    data_path = train_data_path 
 
     # Use matplot to plot some examples. I have already plotted some example data points in: ex_plots
     plot = False       
     image_save_path = ""
 
-    # This loops through your data and can also plot some data points if d
+    # This function loops through your data and can also plot some data points if d
     limit = 50
-    looking_at_data(data_path, limit, plot)
+    #looking_at_data(data_path, limit, plot)
 
-    # This function shows the frequency of each group in the dataset. I have printed the data below so that you don't have to run it.
-    #analyze_space_groups(databs, limit)
+    # This function shows the frequency of each group in the dataset.
+    limit = 5000
+    analyze_space_groups(data_path, limit)
 
-# Here is an output of analyze_space_groups() for the partial train dataset.
 
 # Space Group Frequencies:
 # Space Group 38: 25.90%
