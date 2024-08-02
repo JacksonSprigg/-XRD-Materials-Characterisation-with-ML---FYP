@@ -1,74 +1,133 @@
 import torch
 import torch.nn as nn
 
+from einops import rearrange, repeat, pack, unpack
+from einops.layers.torch import Rearrange
+
 # TODO: This is gen AI code. I need to make sure it is implemented properly.
-# TODO: Get the code from a reputable source
-
-class PositionalEncoding(nn.Module):
-    def __init__(self, d_model, max_len=3501):
-        super().__init__()
-        position = torch.arange(max_len).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model))
-        pe = torch.zeros(1, max_len, d_model)
-        pe[0, :, 0::2] = torch.sin(position * div_term)
-        pe[0, :, 1::2] = torch.cos(position * div_term)
-        self.register_buffer('pe', pe)
-
-    def forward(self, x):
-        return x + self.pe[:, :x.size(1)]
+# TODO: Get the code from a reputable source (Maybe: https://github.com/lucidrains/vit-pytorch)
+# TODO: I have adapted this (https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/vit_1d.py)
 
 class ViT1D_multi_task(nn.Module):
-    def __init__(self, input_dim=3501, patch_size=16, d_model=256, nhead=8, num_layers=6, dim_feedforward=1024, dropout=0.25):
-        super(ViT1D_multi_task, self).__init__()
-        
-        self.patch_embed = nn.Conv1d(1, d_model, kernel_size=patch_size, stride=patch_size)
-        num_patches = input_dim // patch_size
-        
-        self.cls_token = nn.Parameter(torch.zeros(1, 1, d_model))
-        self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, d_model))
-        
-        self.pos_drop = nn.Dropout(p=dropout)
-        
-        encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead, dim_feedforward=dim_feedforward, dropout=dropout)
-        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
-        
-        # Multi-task specific layers
-        self.crysystem_head = nn.Linear(d_model, 7)
-        self.blt_head = nn.Linear(d_model, 6)
-        self.spg_head = nn.Linear(d_model, 230)
-        self.composition_head = nn.Linear(d_model, 118)
-        
+    def __init__(self, *, seq_len=3501, patch_size=9, dim=1024, depth=6, heads=8, mlp_dim=2048, channels=1, dim_head=64, dropout=0.2, emb_dropout=0.2):
+        super().__init__()
+        assert (seq_len % patch_size) == 0
+
+        num_patches = seq_len // patch_size
+        patch_dim = channels * patch_size
+
+        self.to_patch_embedding = nn.Sequential(
+            Rearrange('b c (n p) -> b n (p c)', p=patch_size),
+            nn.LayerNorm(patch_dim),
+            nn.Linear(patch_dim, dim),
+            nn.LayerNorm(dim),
+        )
+
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))
+        self.cls_token = nn.Parameter(torch.randn(dim))
+        self.dropout = nn.Dropout(emb_dropout)
+
+        self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim, dropout)
+
+        # Multi-task output heads
+        self.crysystem_head = nn.Sequential(
+            nn.LayerNorm(dim),
+            nn.Linear(dim, 7)
+        )
+        self.blt_head = nn.Sequential(
+            nn.LayerNorm(dim),
+            nn.Linear(dim, 6)
+        )
+        self.spg_head = nn.Sequential(
+            nn.LayerNorm(dim),
+            nn.Linear(dim, 230)
+        )
+        self.composition_head = nn.Sequential(
+            nn.LayerNorm(dim),
+            nn.Linear(dim, 118)
+        )
+
+    def forward(self, series):
+        x = self.to_patch_embedding(series)
+        b, n, _ = x.shape
+
+        cls_tokens = repeat(self.cls_token, 'd -> b d', b=b)
+
+        x, ps = pack([cls_tokens, x], 'b * d')
+
+        x += self.pos_embedding[:, :(n + 1)]
+        x = self.dropout(x)
+
+        x = self.transformer(x)
+
+        cls_tokens, _ = unpack(x, ps, 'b * d')
+
+        return {
+            'crysystem': self.crysystem_head(cls_tokens),
+            'blt': self.blt_head(cls_tokens),
+            'spg': self.spg_head(cls_tokens),
+            'composition': self.composition_head(cls_tokens)
+        }
+    
+class FeedForward(nn.Module):
+    def __init__(self, dim, hidden_dim, dropout = 0.):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.LayerNorm(dim),
+            nn.Linear(dim, hidden_dim),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden_dim, dim),
+            nn.Dropout(dropout)
+        )
+    def forward(self, x):
+        return self.net(x)
+
+class Attention(nn.Module):
+    def __init__(self, dim, heads = 8, dim_head = 64, dropout = 0.):
+        super().__init__()
+        inner_dim = dim_head *  heads
+        project_out = not (heads == 1 and dim_head == dim)
+
+        self.heads = heads
+        self.scale = dim_head ** -0.5
+
+        self.norm = nn.LayerNorm(dim)
+        self.attend = nn.Softmax(dim = -1)
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, x):
-        x = self.patch_embed(x)
-        x = x.transpose(1, 2)  # (B, num_patches, d_model)
-        
-        cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
-        x = torch.cat((cls_tokens, x), dim=1)
-        x = x + self.pos_embed
-        x = self.pos_drop(x)
-        
-        x = self.transformer(x)
-        
-        # Use the class token for classification
-        x = x[:, 0]
-        
-        # Multi-task specific layers
-        crysystem_out = self.crysystem_head(self.dropout(x))
-        blt_out = self.blt_head(self.dropout(x))
-        spg_out = self.spg_head(self.dropout(x))
-        composition_out = self.composition_head(self.dropout(x))
-        
-        return {
-            'spg': spg_out,
-            'crysystem': crysystem_out,
-            'blt': blt_out,
-            'composition': composition_out
-        }
+        self.to_qkv = nn.Linear(dim, inner_dim * 3, bias = False)
 
-# Example usage:
-# model = VisionTransformer1D(in_channels=1, num_classes=230, embed_dim=256, depth=12, num_heads=8, mlp_ratio=4., qkv_bias=True, drop_rate=0.1, attn_drop_rate=0.1, patch_size=16)
-# x = torch.randn(32, 1, 3501)  # Batch size of 32, 1 channel, 3501 data points
-# output = model(x)
-# print(output.shape)  # Should be (32, 230)
+        self.to_out = nn.Sequential(
+            nn.Linear(inner_dim, dim),
+            nn.Dropout(dropout)
+        ) if project_out else nn.Identity()
+
+    def forward(self, x):
+        x = self.norm(x)
+        qkv = self.to_qkv(x).chunk(3, dim = -1)
+        q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> b h n d', h = self.heads), qkv)
+
+        dots = torch.matmul(q, k.transpose(-1, -2)) * self.scale
+
+        attn = self.attend(dots)
+        attn = self.dropout(attn)
+
+        out = torch.matmul(attn, v)
+        out = rearrange(out, 'b h n d -> b n (h d)')
+        return self.to_out(out)
+
+class Transformer(nn.Module):
+    def __init__(self, dim, depth, heads, dim_head, mlp_dim, dropout = 0.):
+        super().__init__()
+        self.layers = nn.ModuleList([])
+        for _ in range(depth):
+            self.layers.append(nn.ModuleList([
+                Attention(dim, heads = heads, dim_head = dim_head, dropout = dropout),
+                FeedForward(dim, mlp_dim, dropout = dropout)
+            ]))
+    def forward(self, x):
+        for attn, ff in self.layers:
+            x = attn(x) + x
+            x = ff(x) + x
+        return x
