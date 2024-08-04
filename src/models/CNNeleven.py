@@ -6,6 +6,10 @@ import torch.nn.functional as F
 # Accessed 2/8/24
 # As described in simXRD paper.
 
+# Mofidications:
+# A basic augmentation to make CNNten a multi-task learner in CNNten_MultiTask.
+# I decrease the param count in smallCNNten.
+
 class CNNeleven(nn.Module):
     def __init__(self):
         super(CNNeleven, self).__init__()
@@ -22,7 +26,7 @@ class CNNeleven(nn.Module):
 class CNNeleven_MultiTask(nn.Module):
     def __init__(self):
         super(CNNeleven_MultiTask, self).__init__()
-        
+
         self.cnn = NoPoolCNN()
 
         mlp_in_features = 12160
@@ -48,7 +52,6 @@ class CNNeleven_MultiTask(nn.Module):
             'composition': composition_out
         }
     
-
 # Classes  
 class NoPoolCNN(nn.Module):
     def __init__(self):
