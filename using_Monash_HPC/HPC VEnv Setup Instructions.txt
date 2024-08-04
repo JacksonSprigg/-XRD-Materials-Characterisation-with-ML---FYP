@@ -5,7 +5,7 @@
 2. Activate simxrd venv:
     source /monfs01/projects/ys68/v_envs/simxrd_env/bin/activate
 
-3. Set your code interpreter (e.g. VScode) to use this venv at location (This is not a terminal command): 
+3. Set your code interpreter to use this venv at location (This is not a terminal command, do this in your IDE settings): 
     /monfs01/projects/ys68/v_envs/simxrd_env/bin/python
     (I had a bit of trouble here, you may need to update your python extensions)
 
