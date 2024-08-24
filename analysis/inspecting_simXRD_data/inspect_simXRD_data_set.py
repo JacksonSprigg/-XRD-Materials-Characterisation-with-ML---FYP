@@ -7,6 +7,7 @@ from heapq import heappush, heappushpop
 
 # TODO: Make note of data analysis
 # TODO: What are the simulation params?
+# TODO: THIS SHOULD BE A NOTEBOOK AS WELL
 
 # All config params can be found in the __main__ code at the bottom.
 # You can see example visualisations in the ex_plots folder
