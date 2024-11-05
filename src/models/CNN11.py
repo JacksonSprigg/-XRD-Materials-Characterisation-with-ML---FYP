@@ -10,9 +10,9 @@ import torch.nn.functional as F
 # A basic augmentation to make CNNeleven a multi-task learner in CNNeleven_MultiTask.
 # 
 
-class CNNeleven(nn.Module):
+class CNN11(nn.Module):
     def __init__(self):
-        super(CNNeleven, self).__init__()
+        super(CNN11, self).__init__()
         self.cnn = NoPoolCNN()
         mlp_in_features = 12160
         self.MLP = Predictor(mlp_in_features, 230)
@@ -23,9 +23,9 @@ class CNNeleven(nn.Module):
         x = self.MLP(x)
         return x
     
-class CNNeleven_MultiTask(nn.Module):
+class CNN11_MultiTask(nn.Module):
     def __init__(self):
-        super(CNNeleven_MultiTask, self).__init__()
+        super(CNN11_MultiTask, self).__init__()
 
         self.cnn = NoPoolCNN()
 
@@ -52,7 +52,8 @@ class CNNeleven_MultiTask(nn.Module):
             'composition': composition_out
         }
     
-# Classes  
+################# Classes ##################
+
 class NoPoolCNN(nn.Module):
     def __init__(self):
         super(NoPoolCNN, self).__init__()

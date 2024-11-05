@@ -9,7 +9,7 @@ import scripts.training.config_training as config_training
 # TODO: Save best model.
 # TODO: Residual XRD analysis
 
-def train_single_spg(model, train_loader, val_loader, test_loader, criterion, optimizer, device, num_epochs):
+def train_spg(model, train_loader, val_loader, test_loader, criterion, optimizer, device, num_epochs):
     for epoch in range(num_epochs):
         model.train()
         train_loss = 0.0

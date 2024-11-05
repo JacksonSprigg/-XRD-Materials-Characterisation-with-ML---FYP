@@ -8,8 +8,8 @@ import scripts.training.config_training as config_training
 
 # Functions
 from src.data_loading.simXRD_data_loader import create_training_data_loaders
-from src.training.train_single_spg import train_single_spg
-from src.training.train_multi_spg_cryssystem_blt_element import train_multi_spg_cryssystem_blt_element
+from ML_For_XRD_Materials_Characterisation.src.training.train_spacegroup import train_spg
+from ML_For_XRD_Materials_Characterisation.src.training.train_multitask import train_multitask
 from src.utils.check_GPUs import check_gpus
 
 # TODO: Setup_device() function has not been tested with multiple GPUs. I am not currently sure how it will handle multiple GPUs. These needs to be done before large training runs.
@@ -92,12 +92,12 @@ def main():
 
     # Train the model depending on task
     if config_training.MULTI_TASK:
-        trained_model, final_metrics = train_multi_spg_cryssystem_blt_element(
+        trained_model, final_metrics = train_multitask(
             model, train_loader, val_loader, test_loader, criterion, optimizer, 
             device, config_training.NUM_EPOCHS
         )
     else:
-        trained_model, test_loss, test_accuracy = train_single_spg(
+        trained_model, test_loss, test_accuracy = train_spg(
             model, train_loader, val_loader, test_loader, criterion, optimizer, 
             device, config_training.NUM_EPOCHS
         )
@@ -105,11 +105,10 @@ def main():
 
     # Save the model
     save_path, model_name = save_model(trained_model, final_metrics, multi_task=config_training.MULTI_TASK)
+    print(f"Training completed. Model saved as '{model_name}'.")
 
     if config_training.SAVE_MODEL_TO_WANDB_SERVERS:
         wandb.save(save_path)
-
-    print(f"Training completed. Model saved as '{model_name}'.")
 
     if config_training.USE_WANDB:
         wandb_run.finish()

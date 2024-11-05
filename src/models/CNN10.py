@@ -14,9 +14,9 @@ import torch.nn.functional as F
 
 # TODO: Try positional encoding
 
-class CNNten(nn.Module):
+class CNN10(nn.Module):
     def __init__(self):
-        super(CNNten, self).__init__()
+        super(CNN10, self).__init__()
 
         self.conv1 = nn.Conv1d(1, 24, kernel_size=12, stride=1)
         self.conv2 = nn.Conv1d(24, 24, kernel_size=12, stride=1)
@@ -47,9 +47,9 @@ class CNNten(nn.Module):
         
         return x
 
-class CNNten_MultiTask(nn.Module):
+class CNN10_MultiTask(nn.Module):
     def __init__(self):
-        super(CNNten_MultiTask, self).__init__()
+        super(CNN10_MultiTask, self).__init__()
 
         # Shared layers
         self.conv1 = nn.Conv1d(1, 24, kernel_size=12, stride=1)

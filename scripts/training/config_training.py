@@ -4,11 +4,11 @@ import torch.nn as nn
 import torch.optim as optim
 
 # Import models
-from src.models.CNNten import CNNten, CNNten_MultiTask, smallCNNten_MultiTask
-from src.models.CNNeleven import CNNeleven, CNNeleven_MultiTask
-from src.models.smallFCN import smallFCN, smallFCN_MultiTask, smallFCN_SelfAttention_MultiTask, experimentalFCN
-from src.models.ViT import ViT1D_MultiTask
-from src.models.MLPten import MLPten
+from ML_For_XRD_Materials_Characterisation.src.models.CNN10 import CNN10, CNN10_MultiTask, smallCNN10_MultiTask
+from ML_For_XRD_Materials_Characterisation.src.models.CNN11 import CNN11, CNN11_MultiTask
+from ML_For_XRD_Materials_Characterisation.src.models.FCNs import smallFCN, smallFCN_MultiTask, smallFCN_SelfAttention_MultiTask, experimentalFCN
+from ML_For_XRD_Materials_Characterisation.src.models.ViT_1Ds import ViT1D_MultiTask
+from ML_For_XRD_Materials_Characterisation.src.models.MLPs import MLPten
 
 # TODO: Is model class necessary?
 
