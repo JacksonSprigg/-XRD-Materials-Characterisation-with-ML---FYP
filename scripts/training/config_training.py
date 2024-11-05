@@ -21,9 +21,6 @@ TRAIN_DATA = os.path.join(DATA_DIR, 'train.db')
 VAL_DATA = os.path.join(DATA_DIR, 'val.db')
 TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 
-# For file naming purposes
-NAME_OF_DATA_USED = "simXRD_partial_data"
-
 # Model Setup
 MODEL_TYPE = "CNNeleven_MultiTask"                 # Options: Any of the imported models. It should be a string. e.g. "smallFCN"
 MULTI_TASK = True                                  # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)

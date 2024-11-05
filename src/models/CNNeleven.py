@@ -7,8 +7,8 @@ import torch.nn.functional as F
 # As described in simXRD paper.
 
 # Mofidications:
-# A basic augmentation to make CNNten a multi-task learner in CNNten_MultiTask.
-# I decrease the param count in smallCNNten.
+# A basic augmentation to make CNNeleven a multi-task learner in CNNeleven_MultiTask.
+# 
 
 class CNNeleven(nn.Module):
     def __init__(self):

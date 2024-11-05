@@ -47,6 +47,8 @@ class simXRDDataset(Dataset):
         space_group -= 1
 
         # Convert Bravais lattice type to numerical encoding
+        # TODO: ENCODING ARE A, B, and C, PHYSICALLY EQUIVALENT? some sources say yes which confuse me
+        # TODO: http://pd.chem.ucl.ac.uk/pdnn/symm3/allsgp.htm
         blt_encoding = {"P": 0, "I": 1, "F": 2, "A": 3, "B": 4, "C": 5, "R": 6}
         blt_num = blt_encoding[bravis_latt_type]
 

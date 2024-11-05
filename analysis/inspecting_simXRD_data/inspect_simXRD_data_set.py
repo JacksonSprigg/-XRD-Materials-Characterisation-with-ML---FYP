@@ -21,7 +21,7 @@ from heapq import heappush, heappushpop
 # symbols: A list, e.g., ['H', 'H', 'H', 'H', 'C', 'C', 'O', 'O', 'O', 'O', 'O', 'O']
 # intensity: XRD intensities, normalised to 100 | 3501 x 1 vector
 # latt_dis: Lattice distances | 3501 x 1 vector
-# tager: [Space Group, Crystal System, Bravis Lattice type]
+# tager: [Space Group, Crystal System, Bravis Lattice]
 # mass: Atomic mass
 # simulation_param: TODO: **I don't know what this actually means**
 #####################################################################################
@@ -243,8 +243,10 @@ if __name__ == "__main__":
     val_data_path = "training_data/simXRD_partial_data/val.db"      # Size = 1000
     test_full_data_path = "training_data/simXRD_full_data/test.db"  # Size = 120,000
 
+    test_full_data_path = "training_data/simXRD_full_data/new/ILtrain_combined_1.db"
+
     # Change this
-    data_path = train_data_path 
+    data_path = test_full_data_path 
 
     # Use matplot to plot some examples. I have already plotted some example data points in: ex_plots
     plot = False       
@@ -255,7 +257,7 @@ if __name__ == "__main__":
     #looking_at_data(data_path, limit, plot)
 
     # This function shows the frequency of each group in the dataset.
-    limit = 5000
+    limit = 1
     analyze_space_groups(data_path, limit)
 
 
@@ -344,7 +346,7 @@ if __name__ == "__main__":
 # 3: 7.37%
 # 7: 6.46%
 
-# Bravais Lattice Type Frequencies:
+# Bravais Lattice Frequencies:
 # P: 42.12%
 # A: 25.96%
 # F: 16.97%
