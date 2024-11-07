@@ -12,7 +12,7 @@ import scripts.training.config_training as config_training
 # TODO: Draw this function out to make sure it makes sense for our task
 # TODO: Save best model.
 
-def train_multi_spg_cryssystem_blt_element(model, train_loader, val_loader, test_loader, criteria, optimizer, device, num_epochs):
+def train_multitask(model, train_loader, val_loader, test_loader, criteria, optimizer, device, num_epochs):
     
     # Initialize running averages for loss normalization
     running_avg_losses = {task: 1.0 for task in criteria.keys()}

@@ -95,9 +95,9 @@ class CNN10_MultiTask(nn.Module):
             'composition': out_composition
         }
     
-class smallCNNten_MultiTask(nn.Module):
+class smallCNN10_MultiTask(nn.Module):
     def __init__(self):
-        super(smallCNNten_MultiTask, self).__init__()
+        super(smallCNN10_MultiTask, self).__init__()
 
         # Shared layers
         self.conv1 = nn.Conv1d(1, 16, kernel_size=12, stride=1)

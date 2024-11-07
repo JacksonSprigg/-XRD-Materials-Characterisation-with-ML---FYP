@@ -5,9 +5,9 @@ import torch.nn.functional as F
 
 # TODO: Count parameters and test it.
 
-class MLPten(nn.Module):
+class MLP10(nn.Module):
     def __init__(self):
-        super(MLPten, self).__init__()
+        super(MLP10, self).__init__()
         
         self.fc1 = nn.Linear(3501, 2000)
         self.fc2 = nn.Linear(2000, 1500)

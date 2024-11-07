@@ -1,7 +1,7 @@
 import torch
-from torch.utils.data import Dataset, DataLoader
-from ase.db import connect
 import numpy as np
+from ase.db import connect
+from torch.utils.data import Dataset, DataLoader
 
 class simXRDDataset(Dataset):
     def __init__(self, db_path):

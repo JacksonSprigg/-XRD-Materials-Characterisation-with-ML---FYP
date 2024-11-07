@@ -4,11 +4,11 @@ import torch.nn as nn
 import torch.optim as optim
 
 # Import models
-from ML_For_XRD_Materials_Characterisation.src.models.CNN10 import CNN10, CNN10_MultiTask, smallCNN10_MultiTask
-from ML_For_XRD_Materials_Characterisation.src.models.CNN11 import CNN11, CNN11_MultiTask
-from ML_For_XRD_Materials_Characterisation.src.models.FCNs import smallFCN, smallFCN_MultiTask, smallFCN_SelfAttention_MultiTask, experimentalFCN
-from ML_For_XRD_Materials_Characterisation.src.models.ViT_1Ds import ViT1D_MultiTask
-from ML_For_XRD_Materials_Characterisation.src.models.MLPs import MLPten
+from src.models.CNN10 import CNN10, CNN10_MultiTask, smallCNN10_MultiTask
+from src.models.CNN11 import CNN11, CNN11_MultiTask
+from src.models.FCNs import smallFCN, smallFCN_MultiTask, smallFCN_SelfAttention_MultiTask, experimentalFCN
+from src.models.ViT_1Ds import ViT1D_MultiTask
+from src.models.MLPs import MLP10
 
 # TODO: Is model class necessary?
 
@@ -22,7 +22,7 @@ VAL_DATA = os.path.join(DATA_DIR, 'val.db')
 TEST_DATA = os.path.join(DATA_DIR, 'test.db')
 
 # Model Setup
-MODEL_TYPE = "CNNeleven_MultiTask"                 # Options: Any of the imported models. It should be a string. e.g. "smallFCN"
+MODEL_TYPE = "smallFCN_MultiTask"                 # Options: Any of the imported models. It should be a string. e.g. "smallFCN"
 MULTI_TASK = True                                  # Set to True for multi-task learning (points train function to train_multi_spg_cryssystem_blt_element.py)
 
 # IF SINGLE TASK, loss
@@ -37,7 +37,7 @@ MULTI_TASK_CRITERIA = {
 }
 
 # Hyper Params
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.0001
 BATCH_SIZE = 32
 NUM_EPOCHS = 100
 
@@ -57,15 +57,15 @@ WANDB_LOG_ARCHITECTURE = False
 ###########################################################################################
 ############# DON'T TOUCH - CThese classes contain the options for above ##################
 MODEL_CLASS = {
-    "CNNten": CNNten,
-    "CNNten_MultiTask": CNNten_MultiTask,
-    "CNNeleven_MultiTask": CNNeleven_MultiTask,
-    "smallCNNten_MultiTask": smallCNNten_MultiTask,
+    "CNN10": CNN10,
+    "CNN10_MultiTask": CNN10_MultiTask,
+    "CNN11_MultiTask": CNN11_MultiTask,
+    "smallCNN10_MultiTask": smallCNN10_MultiTask,
     "smallFCN": smallFCN,
     "smallFCN_MultiTask": smallFCN_MultiTask,
     "smallFCN_SelfAttention_MultiTask": smallFCN_SelfAttention_MultiTask,
     "experimentalFCN": experimentalFCN,
-    "MLPten": MLPten,
+    "MLP10": MLP10,
     "ViT1D_MultiTask": ViT1D_MultiTask
 }
 CRITERION_CLASS = {

@@ -94,7 +94,7 @@ class smallFCN_MultiTask(nn.Module):
         self.pool = nn.MaxPool1d(2)
         
         # Dropout layer
-        self.dropout = nn.Dropout(0.3)
+        self.dropout = nn.Dropout(0.35)
         
         # Flatten layer
         self.flatten = nn.Flatten()

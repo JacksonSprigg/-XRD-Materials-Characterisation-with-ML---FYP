@@ -8,8 +8,8 @@ import scripts.training.config_training as config_training
 
 # Functions
 from src.data_loading.simXRD_data_loader import create_training_data_loaders
-from ML_For_XRD_Materials_Characterisation.src.training.train_spacegroup import train_spg
-from ML_For_XRD_Materials_Characterisation.src.training.train_multitask import train_multitask
+from src.training.train_spacegroup import train_spg
+from src.training.train_multitask import train_multitask
 from src.utils.check_GPUs import check_gpus
 
 # TODO: Setup_device() function has not been tested with multiple GPUs. I am not currently sure how it will handle multiple GPUs. These needs to be done before large training runs.
