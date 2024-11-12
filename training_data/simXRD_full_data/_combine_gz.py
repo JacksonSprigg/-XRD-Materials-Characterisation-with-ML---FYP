@@ -2,13 +2,13 @@ import os
 import time
 
 def combine_gzip_files(input_prefix, num_parts, output_file):
-    total_size = sum(os.path.getsize(f"training_data/simXRD_full_data/new/{input_prefix}_{i}.db.gz") for i in range(1, num_parts + 1))
+    total_size = sum(os.path.getsize(f"training_data/simXRD_full_data/{input_prefix}_{i}.db.gz") for i in range(1, num_parts + 1))
     processed_size = 0
     start_time_total = time.time()
 
     with open(output_file, 'wb') as f_out:
         for i in range(1, num_parts + 1):
-            part_file = f"training_data/simXRD_full_data/new/{input_prefix}_{i}.db.gz"
+            part_file = f"training_data/simXRD_full_data/{input_prefix}_{i}.db.gz"
             file_size = os.path.getsize(part_file)
             
             print(f"Processing file {i} of {num_parts}: {part_file}")

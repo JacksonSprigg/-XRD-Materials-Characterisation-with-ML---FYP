@@ -23,5 +23,5 @@ def unzip_gz_file(input_file, output_file=None):
     print(f"Time taken: {end_time - start_time:.2f} seconds")
 
 # Usage
-input_file = 'ILtrain_combined_1.db.gz'  # Replace with your .gz file name
+input_file = 'ILtrain_combined_2.db.gz'  # Replace with your .gz file name
 unzip_gz_file(input_file)
